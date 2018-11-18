@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">Receipy</string>
 
+    <!-- Specific Buttons -->
     <string name="btn_recipes">Recipe List</string>
     <string name="btn_shop">Shopping</string>
+    <string name="btn_new_recipe">Create New Recipe</string>
+    <string name="dtn_edit_view">View/Edit</string>
+
+    <!-- Generic Buttons -->
+    <string name="btn_delete">Delete</string>
+    <string name="btn_confirm">Done</string>
+
+    <!-- Placeholder text -->
+    <string name="txt_default">Default Text</string>
+
+    <!-- Text Hints -->
+    <string name="hint_recipe_name">Recipe Name</string>
+
 </resources>
