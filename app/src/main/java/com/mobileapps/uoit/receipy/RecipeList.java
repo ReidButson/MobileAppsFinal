@@ -34,7 +34,7 @@ public class RecipeList extends AppCompatActivity {
             View recipe = inflater.inflate(R.layout.recipe_field, null);
 
             TextView name_field =  recipe.findViewById(R.id.recipe_name_txt);
-            
+
             name_field.setText(name);
 
             recipe_holder.addView(recipe, recipe_holder.getChildCount() - 1);
