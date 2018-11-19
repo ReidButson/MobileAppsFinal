@@ -14,11 +14,15 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_new_recipe" />
 
-    <LinearLayout
-        android:id="@+id/recipe_holder"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    </LinearLayout>
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/recipe_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
