@@ -32,6 +32,9 @@ public class RecipeList extends AppCompatActivity {
     @Override
     protected void onActivityResult(int request_code, int result_code, Intent data){
         if (request_code == 1){
+            if(result_code == RESULT_CANCELED){
+                return;
+            }
             final LayoutInflater inflater = (LayoutInflater) getApplicationContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
