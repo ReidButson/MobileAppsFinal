@@ -17,4 +17,8 @@
     <!-- Text Hints -->
     <string name="hint_recipe_name">Recipe Name</string>
 
+    <!-- Ingredient Field -->
+    <string name="ingredient_name">Ingredient:</string>
+    <string name="quantity_display">Qty:</string>
+
 </resources>
