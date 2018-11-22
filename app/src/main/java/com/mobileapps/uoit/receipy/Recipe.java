@@ -3,8 +3,8 @@ package com.mobileapps.uoit.receipy;
 import java.util.ArrayList;
 
 public class Recipe {
-    public static String name;
-    public static int id;
+    public String name;
+    public int id;
     public ArrayList<Ingredient> ingredients;
     public Recipe(int id, String name, ArrayList<Ingredient> ingredients){
         this.ingredients = new ArrayList<Ingredient>();
