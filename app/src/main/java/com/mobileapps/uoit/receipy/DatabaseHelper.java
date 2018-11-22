@@ -1,5 +1,6 @@
 package com.mobileapps.uoit.receipy;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -98,5 +99,97 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL("DROP table " + RECIPE_INGREDIENTS_TABLE + ";");
         db.execSQL("DROP table " + STORE_INGREDIENTS_TABLE + ";");
         this.onCreate(db);
+    }
+
+    /** Inserts a new store into the database.
+     *
+     * @param store The store to insert into the database.
+     * @return The id of the inserted store.
+     */
+    public long insertStore(Store store) {
+        // Create the values from the given store
+        ContentValues values = new ContentValues();
+        values.put(STORE_NAME, store.getName());
+        values.put(STORE_ADDRESS, store.getAddress());
+        // Inserts the new store
+        SQLiteDatabase db = getWritableDatabase();
+        long id = db.insert(STORE_TABLE, null, values);
+        db.close();
+        return id;
+    }
+
+    /** Inserts a new ingredient into the database.
+     *
+     * @param ingredient The ingredient to insert.
+     * @return The id of the inserted ingredient.
+     */
+    public long insertIngredient(Ingredient ingredient) {
+        // Create the values from the given ingredient
+        ContentValues values = new ContentValues();
+        values.put(INGREDIENTS_NAME, ingredient.getName());
+        values.put(INGREDIENTS_MEASUREMENT_TYPE, ingredient.getUnits());
+        // Inserts the new ingredient
+        SQLiteDatabase db = getWritableDatabase();
+        long id = db.insert(INGREDIENTS_TABLE, null, values);
+        db.close();
+        return id;
+    }
+
+    /** Inserts a new recipe into the database.
+     *
+     * @param recipe The recipe to insert.
+     * @return The id of the inserted recipe.
+     */
+    public long insertRecipe(Recipe recipe) {
+        // Create the values from the given recipe
+        ContentValues values = new ContentValues();
+        values.put(RECIPE_NAME, recipe.getName());
+        // Inserts the new recipe
+        SQLiteDatabase db = getWritableDatabase();
+        long id = db.insert(RECIPE_TABLE, null, values);
+        db.close();
+        return id;
+    }
+
+    /** Inserts a new recipe ingredient into the database.
+     *
+     * @param recipe The recipe the ingredient belongs to.
+     * @param ingredient The ingredient to add to the recipe.
+     */
+    public void insertRecipeIngredient(Recipe recipe, Ingredient ingredient) {
+        // Create the values from the given recipe and ingredient
+        ContentValues values = new ContentValues();
+        values.put(RECIPE_INGREDIENTS_RECIPE_ID, recipe.getId());
+        values.put(RECIPE_INGREDIENTS_INGREDIENT_ID, ingredient.getId());
+        values.put(RECIPE_INGREDIENTS_AMOUNT, ingredient.getAmount());
+        // Inserts the new recipe ingredient
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(RECIPE_INGREDIENTS_TABLE, null, values);
+        db.close();
+    }
+
+    /** Inserts all the ingredients in the recipe into the database.
+     *
+     * @param recipe The recipe to have the ingredients inserted for.
+     */
+    public void insertRecipeIngredients(Recipe recipe) {
+        // Loop through the recipe's ingredients
+        for (Ingredient ingredient: recipe.ingredients) {
+            insertRecipeIngredient(recipe, ingredient);
+        }
+    }
+
+    /** Inserts a new store ingredient into the database.
+     *
+     * @param store The store the ingredient is to be added to.
+     * @param ingredient The ingredient to add to the store.
+     */
+    public void insertStoreIngredient(Store store, Ingredient ingredient) {
+        // Create the values from the given store and ingredient
+        ContentValues values = new ContentValues();
+        values.put(STORE_INGREDIENTS_STORE_ID, store.getId());
+        values.put(STORE_INGREDIENTS_INGREDIENT_ID, ingredient.getId());
+        values.put(STORE_INGREDIENTS_AMOUNT, ingredient.getAmount());
+        values.put(STORE_INGREDIENTS_PRICE, ingredient.getPrice());
     }
 }
