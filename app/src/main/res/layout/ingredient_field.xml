@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/ingredinet_entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -14,8 +14,8 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/editText2"
-        android:layout_width="168dp"
+        android:id="@+id/Quantity_entry"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
