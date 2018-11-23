@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class RecipeList extends AppCompatActivity {
+public class RecipeListActivity extends AppCompatActivity {
 
     private LinearLayout recipe_holder;
 
@@ -40,7 +40,7 @@ public class RecipeList extends AppCompatActivity {
 
             String name = data.getStringExtra("RECIPE_NAME");
 
-            final View recipe = inflater.inflate(R.layout.recipe_field, null);
+            final View recipe = inflater.inflate(R.layout.recipe_ingredient_item, null);
 
             recipe.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -109,7 +109,7 @@ public class RecipeList extends AppCompatActivity {
         recipe_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent create_recipe = new Intent(RecipeList.this, CreateRecipe.class);
+                Intent create_recipe = new Intent(RecipeListActivity.this, CreateRecipeActivity.class);
                 startActivityForResult(create_recipe, 1);
             }
         });
