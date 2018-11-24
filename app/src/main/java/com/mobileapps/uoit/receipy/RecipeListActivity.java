@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +20,10 @@ import java.util.ArrayList;
 public class RecipeListActivity extends AppCompatActivity {
 
     private LinearLayout recipe_holder;
+    private static final String TAG = "RecipeList";
+    private ArrayList<String> names = new ArrayList<>();
+    private ArrayList<String> images = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +34,11 @@ public class RecipeListActivity extends AppCompatActivity {
 
         deleteChecked();
         addRecipeConfigure();
+        initImages();
+    }
+
+    private void initImages (){
+        initRecyclerView();
     }
 
     @Override
@@ -113,5 +125,13 @@ public class RecipeListActivity extends AppCompatActivity {
                 startActivityForResult(create_recipe, 1);
             }
         });
+    }
+
+    private void initRecyclerView(){
+        Log.d(TAG, "initRecyclerView: INITIATES");
+        RecyclerView recyclerView = findViewById(R.id.recipe_list);
+        RecipeAdapter adapter = new RecipeAdapter(this, names, images);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 }
