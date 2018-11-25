@@ -1,13 +1,14 @@
 package com.mobileapps.uoit.receipy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,13 +17,13 @@ import java.util.ArrayList;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder>{
     private static final String TAG = "RecipeAdapter";
-    private ArrayList<String> imageNames = new ArrayList<>();
-    private ArrayList<String> images = new ArrayList<>();
+    private ArrayList<Recipe> mRecipeNames;
+    //private ArrayList<String> images = new ArrayList<>();
     private Context mContext;
 
-    public RecipeAdapter(Context context, ArrayList<String> imageNames,ArrayList<String> images){
-        this.imageNames = imageNames;
-        this.images = images;
+
+    public RecipeAdapter(Context context, ArrayList<Recipe> recipes){
+        this.mRecipeNames = recipes;
         mContext = context;
     }
 
@@ -37,12 +38,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         Log.d(TAG, "onBindViewHolder: called"); //debugging
-        viewHolder.imageName.setText(imageNames.get(i));
+        viewHolder.recipeNames.setText(mRecipeNames.get(i).getName());
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: Clicked on: " + imageNames.get(i));
-                Toast.makeText(mContext, imageNames.get(i), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onClick: Clicked on: " + mRecipeNames.get(i));
+                Toast.makeText(mContext, mRecipeNames.get(i).getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: Clicked on: " + mRecipeNames.get(i));
+                Intent intent = new Intent(mContext, ViewRecipe.class);
+                intent.putExtra("recipe", mRecipeNames.get(i));
+                mContext.startActivity(intent);
             }
         });
 
@@ -50,20 +60,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return imageNames.size();
+        return mRecipeNames.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView image;
-        TextView imageName;
+        TextView recipeNames;
         RelativeLayout parentLayout;
+        Button editButton;
+
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.recipe_image);
-            imageName = itemView.findViewById(R.id.recipe_name_view);
+            editButton = itemView.findViewById(R.id.view_recipe_btn);
+            recipeNames = itemView.findViewById(R.id.recipe_name_view);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }

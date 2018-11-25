@@ -6,6 +6,8 @@
     <string name="btn_shop">Shopping</string>
     <string name="btn_new_recipe">Create New Recipe</string>
     <string name="dtn_edit_view">View/Edit</string>
+    <string name="btn_text">View/Edit</string>
+    <string name="btn_new_ingredient">New Ingredient</string>
 
     <!-- Generic Buttons -->
     <string name="btn_delete">Delete</string>
@@ -20,5 +22,7 @@
     <!-- Ingredient Field -->
     <string name="ingredient_name">Ingredient:</string>
     <string name="quantity_display">Qty:</string>
+    <string name="units_display">Units:</string>
+    <string name="title_activity_view_recipe">ViewRecipe</string>
 
 </resources>

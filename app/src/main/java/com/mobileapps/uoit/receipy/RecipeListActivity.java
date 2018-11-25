@@ -18,11 +18,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class RecipeListActivity extends AppCompatActivity {
-
+    DatabaseHelper db;
     private LinearLayout recipe_holder;
     private static final String TAG = "RecipeList";
-    private ArrayList<String> names = new ArrayList<>();
-    private ArrayList<String> images = new ArrayList<>();
+    private ArrayList<Recipe> recipes = new ArrayList<>();
 
 
     @Override
@@ -31,16 +30,50 @@ public class RecipeListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_list);
 
         recipe_holder = findViewById(R.id.recipe_holder);
+        db = new DatabaseHelper(this);
 
-        deleteChecked();
+        //deleteChecked();
         addRecipeConfigure();
-        initImages();
+        initDb();
+    }
+    protected void onResume() {
+        super.onResume();
+        db = new DatabaseHelper(this);
+        initDb ();
+        //deleteChecked();
+        addRecipeConfigure();
     }
 
-    private void initImages (){
+    private void initDb (){
+        recipes = db.getRecipes();
+        db.getIngredients();
         initRecyclerView();
     }
 
+    void addRecipeConfigure(){
+        Button recipe_btn = findViewById(R.id.add_recipe_btn);
+
+        recipe_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent potato = new Intent(RecipeListActivity.this, CreateRecipeActivity.class);
+                startActivity(potato);
+            }
+        });
+    }
+
+    private void initRecyclerView(){
+        Log.d(TAG, "initRecyclerView: INITIATES");
+        RecyclerView recyclerView = findViewById(R.id.recipe_list);
+        RecipeAdapter adapter = new RecipeAdapter(this, recipes);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    /***
+     * Reid's code not sure if he wants to keep this stuff and like repurpose it so ill just leave it commented out
+     */
+    /*
     @Override
     protected void onActivityResult(int request_code, int result_code, Intent data){
         if (request_code == 1){
@@ -69,7 +102,8 @@ public class RecipeListActivity extends AppCompatActivity {
             recipe_holder.addView(recipe, recipe_holder.getChildCount() - 1);
         }
     }
-
+    */
+    /*
     public void deleteChecked(){
         final FloatingActionButton delete_flt_btn = findViewById(R.id.floatingActionButton);
 
@@ -114,24 +148,5 @@ public class RecipeListActivity extends AppCompatActivity {
     public void delete_recipe(View v){
         recipe_holder.removeView(v);
     }
-
-    void addRecipeConfigure(){
-        Button recipe_btn = findViewById(R.id.add_recipe_btn);
-
-        recipe_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent create_recipe = new Intent(RecipeListActivity.this, CreateRecipeActivity.class);
-                startActivityForResult(create_recipe, 1);
-            }
-        });
-    }
-
-    private void initRecyclerView(){
-        Log.d(TAG, "initRecyclerView: INITIATES");
-        RecyclerView recyclerView = findViewById(R.id.recipe_list);
-        RecipeAdapter adapter = new RecipeAdapter(this, names, images);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
+    */
 }

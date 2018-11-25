@@ -2,18 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding ="15dp"
+    android:padding ="10dp"
     android:id="@+id/parent_layout">
-    <android.support.v7.widget.AppCompatImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:id="@+id/recipe_image"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:id = "@+id/view_recipe_btn"
+        android:text = "@string/btn_text"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test"
+        android:text="@string/txt_default"
         android:id="@+id/recipe_name_view"
-        android:layout_toRightOf="@+id/recipe_image"
+        android:layout_toRightOf="@+id/view_recipe_btn"
         android:textColor="#000"
         android:layout_centerVertical="true"
         android:layout_marginLeft="30dp"

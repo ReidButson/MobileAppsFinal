@@ -1,8 +1,9 @@
 package com.mobileapps.uoit.receipy;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Recipe {
+public class Recipe implements Serializable {
     public String name;
 
     public int id;
