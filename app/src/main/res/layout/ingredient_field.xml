@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableRow
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <EditText
-        android:id="@+id/ingredinet_entry"
+        android:id="@+id/ingredient_entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -14,12 +14,21 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/Quantity_entry"
+        android:id="@+id/quantity_entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:ems="10"
+        android:layout_toRightOf="@+id/ingredient_entry"
+        android:ems="4"
         android:hint="@string/quantity_display"
         android:inputType="textPersonName" />
-</TableRow>
+    <EditText
+        android:id="@+id/units_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/quantity_entry"
+        android:ems="4"
+        android:hint="@string/units_display"
+        android:inputType="textPersonName" />
+</RelativeLayout>

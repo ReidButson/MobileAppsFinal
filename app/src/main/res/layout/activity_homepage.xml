@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/gradient_background">
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="32dp"
-        tools:context=".Homepage">
-        <Button
-            android:id="@+id/recipe_list_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/round_button"
-            android:text="@string/btn_recipes" />
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    android:orientation="vertical">
 
-        <Button
-            android:id="@+id/shopping_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/round_button"
-            android:text="@string/btn_shop" />
-    </LinearLayout>
-</FrameLayout>
+    <Button
+        android:id="@+id/recipe_list_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/round_button"
+        android:onClick="recipeButton"
+        android:text="@string/btn_recipes" />
+
+    <Button
+        android:id="@+id/shopping_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/round_button"
+        android:onClick="shoppingButton"
+        android:text="@string/btn_shop" />
+
+</LinearLayout>
