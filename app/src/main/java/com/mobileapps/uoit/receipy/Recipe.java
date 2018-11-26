@@ -49,4 +49,7 @@ public class Recipe implements Serializable {
     public void removeIngredient(Ingredient ingredient){
         ingredients.remove(ingredient);
     }
+    public void setRecipe(ArrayList<Ingredient> ingredients){
+        this.ingredients = ingredients;
+    }
 }

@@ -72,7 +72,7 @@ public class Ingredient {
         this.id = id;
     }
 
-    public void setAmount(int amount){
+    public void setAmount(double amount){
         this.amount = amount;
     }
 
