@@ -3,6 +3,8 @@ package com.mobileapps.uoit.receipy;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,44 +37,67 @@ public class IngredientViewAdapter extends RecyclerView.Adapter<IngredientViewAd
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        Log.d(TAG, "onBindViewHolder: INITIATED");
         viewHolder.ingredient.setText(mIngredients.get(i));
-        Log.d(TAG, "onBindViewHolder: " + mIngredients.get(i));
         viewHolder.quantity.setText(Double.toString(mQuantity.get(i)));
         viewHolder.units.setText(mUnits.get(i));
 
-        viewHolder.ingredient.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        viewHolder.ingredient.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    String name = viewHolder.ingredient.getText().toString();
-                    mIngredients.set(i, name);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String name = viewHolder.ingredient.getText().toString();
+                mIngredients.set(i, name);
+            }
+        });
+
+        viewHolder.quantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    Double qty = Double.parseDouble(viewHolder.quantity.getText().toString());
+                    mQuantity.set(i, qty);
+                    Log.d(TAG, "afterTextChanged: double is tacobelmont");
+                }
+                catch (NumberFormatException e) {
+                    mQuantity.set(i, 0.0);
                 }
             }
         });
 
-        viewHolder.quantity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        viewHolder.units.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    try {
-                        Double qty = Double.parseDouble(viewHolder.quantity.getText().toString());
-                        mQuantity.set(i, qty);
-                    }
-                    catch (NumberFormatException e) {
-                        mQuantity.set(i, 0.0);
-                    }
-                }
-            }
-        });
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        viewHolder.units.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            }
+
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
-                    String unit = viewHolder.units.getText().toString();
-                    mUnits.set(i, unit);
-                }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String name = viewHolder.units.getText().toString();
+                mUnits.set(i, name);
             }
         });
     }

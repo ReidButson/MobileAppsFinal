@@ -286,19 +286,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
      * @param recipe The given recipe.
      * @return The recipe with the ingredients added.
      */
-    public Recipe getRecipeIngredients(Recipe recipe) {
+    public ArrayList<Ingredient> getRecipeIngredients(Recipe recipe) {
         // Query the database
+        ArrayList<Ingredient> ingredients = new ArrayList<>();
         String get_recipe_ingredients = "SELECT r." + RECIPE_NAME + ", i." +
                 INGREDIENTS_ID + ", i." + INGREDIENTS_NAME + ", i." + INGREDIENTS_MEASUREMENT_TYPE +
                 ", ri." + RECIPE_INGREDIENTS_AMOUNT +
                 " FROM " + RECIPE_TABLE + " AS r" +
                 " INNER JOIN " + RECIPE_INGREDIENTS_TABLE + " AS ri" +
-                " ON r." + RECIPE_ID + " = ri." + RECIPE_INGREDIENTS_TABLE +
+                " ON r." + RECIPE_ID + " = ri." + RECIPE_INGREDIENTS_RECIPE_ID +
                 " INNER JOIN " + INGREDIENTS_TABLE + " AS i" +
                 " ON i." + INGREDIENTS_ID + " = ri." + RECIPE_INGREDIENTS_INGREDIENT_ID +
                 " WHERE r.id = " + recipe.getId() + ";";
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(get_recipe_ingredients, null);
+        System.out.println(get_recipe_ingredients);
 
         // Loop through the returned cursor
         if (cursor.moveToFirst()) {
@@ -312,7 +314,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 double amount = cursor.getDouble(4);
                 // Create and insert the ingredient into the recipe object
                 Ingredient new_ingredient = new Ingredient(id, name, amount, measurement_type);
-                recipe.addIngredient(new_ingredient);
+                ingredients.add(new_ingredient);
+                //recipe.addIngredient(new_ingredient);
             } while (cursor.moveToNext());
         }
 
@@ -321,6 +324,20 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.close();
 
         // Return the recipe
-        return recipe;
+        return ingredients;
+    }
+
+    public void deleteRecipe(Recipe recipe){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(RECIPE_TABLE, RECIPE_ID + " = ?",
+                new String[] { String.valueOf(recipe.getId()) });
+        db.close();
+    }
+
+    public void clearRecipeIngredients(Recipe recipe){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(RECIPE_INGREDIENTS_TABLE, RECIPE_INGREDIENTS_RECIPE_ID + " = ?",
+                new String[] { String.valueOf(recipe.getId()) });
+        db.close();
     }
 }

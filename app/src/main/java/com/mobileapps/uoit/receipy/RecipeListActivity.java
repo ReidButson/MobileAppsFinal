@@ -8,12 +8,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,6 +19,7 @@ public class RecipeListActivity extends AppCompatActivity {
     private LinearLayout recipe_holder;
     private static final String TAG = "RecipeList";
     private ArrayList<Recipe> recipes = new ArrayList<>();
+    private ArrayList<Ingredient> ingredients = new ArrayList<>();
 
 
     @Override
@@ -45,8 +43,14 @@ public class RecipeListActivity extends AppCompatActivity {
     }
 
     private void initDb (){
-        recipes = db.getRecipes();
-        db.getIngredients();
+        try{
+            recipes = db.getRecipes();
+            ingredients = db.getIngredients();
+        }catch (RuntimeException e){
+            System.out.println("empty database");
+        }
+
+
         initRecyclerView();
     }
 
