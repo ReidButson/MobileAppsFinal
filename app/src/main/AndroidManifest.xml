@@ -20,7 +20,10 @@
         <activity android:name=".CreateRecipeActivity" />
         <activity
             android:name=".ViewRecipe"
-            android:label="@string/title_activity_view_recipe"></activity>
+            android:label="@string/title_activity_view_recipe" />
+        <activity android:name=".Shopping" />
+        <activity android:name=".Shops" />
+        <activity android:name=".CreateStore"></activity>
     </application>
 
 </manifest>

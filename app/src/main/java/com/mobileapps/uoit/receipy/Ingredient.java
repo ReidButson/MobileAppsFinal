@@ -1,6 +1,9 @@
 package com.mobileapps.uoit.receipy;
 
-public class Ingredient {
+
+import java.io.Serializable;
+
+public class Ingredient implements Serializable {
     public int id;
     public String name;
     public double amount;

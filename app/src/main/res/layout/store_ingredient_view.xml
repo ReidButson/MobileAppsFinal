@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp">
+    <EditText
+        android:id="@+id/price_field"
+        android:ems="6"
+        android:layout_below="@+id/ingredient_name"
+        android:hint="Price:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/quantity_field"
+        android:ems="4"
+        android:hint="Per:"
+        android:layout_below="@id/ingredient_name"
+        android:layout_toRightOf="@+id/price_field"
+        android:layout_marginLeft="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/ingredient_name"
+        android:text="@string/txt_default"
+        android:textSize="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

@@ -24,5 +24,7 @@ public class HomepageActivity extends AppCompatActivity {
     }
 
     public void shoppingButton (View v) {
+        Intent to_shopping = new Intent(this, Shopping.class);
+        startActivity(to_shopping);
     }
 }

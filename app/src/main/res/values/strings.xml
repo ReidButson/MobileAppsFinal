@@ -8,10 +8,13 @@
     <string name="dtn_edit_view">View/Edit</string>
     <string name="btn_text">View/Edit</string>
     <string name="btn_new_ingredient">New Ingredient</string>
+    <string name="btn_add_ingredient">Add ingredient</string>
+    <string name="btn_add_recipe">Add recipe</string>
 
     <!-- Generic Buttons -->
     <string name="btn_delete">Delete</string>
     <string name="btn_confirm">Done</string>
+    <string name="btn_back">Back</string>
 
     <!-- Placeholder text -->
     <string name="txt_default">Default Text</string>
@@ -24,5 +27,9 @@
     <string name="quantity_display">Qty:</string>
     <string name="units_display">Units:</string>
     <string name="title_activity_view_recipe">ViewRecipe</string>
+    <string name="btn_new_store">New Store</string>
+    <string name="store_name">Name:</string>
+    <string name="hint_store">Store Name</string>
+
 
 </resources>

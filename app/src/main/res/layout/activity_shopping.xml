@@ -1,9 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Shopping">
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/btn_add_recipe"
+        android:layout_toRightOf="@+id/add_recipe_shopping_btn"
+        android:layout_alignTop="@+id/add_recipe_shopping_btn"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/recipe_name_text"
+        android:textSize="20dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/add_ingredient_shopping_btn"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/add_ingredient_shopping_btn"
+        android:hint="@string/btn_add_ingredient"
+        android:id="@+id/ingredient_name_text"
+        android:textSize="20dp" />
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/add_recipe_shopping_btn"
+        android:layout_width="42dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:src="@android:drawable/ic_input_add" />
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/add_ingredient_shopping_btn"
+        android:layout_width="42dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/add_recipe_shopping_btn"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:src="@android:drawable/ic_input_add" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/ingredient_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/add_ingredient_shopping_btn"
+        android:layout_marginTop="20dp"
+        android:padding="20dp"></android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/go_shopping_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ingredient_list"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="115dp"
+        android:text="@string/btn_confirm" />
+
+</RelativeLayout>
