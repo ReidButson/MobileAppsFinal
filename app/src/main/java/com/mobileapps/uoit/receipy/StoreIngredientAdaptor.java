@@ -5,13 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -56,8 +55,12 @@ public class StoreIngredientAdaptor extends RecyclerView.Adapter<StoreIngredient
                 Double cost;
                 try{
                     cost = Double.parseDouble(viewHolder.priceText.getText().toString());
+                    price.set(i, cost);
+                    Log.d(TAG, "afterTextChanged: success" + cost);
                 }catch (NumberFormatException e){
                     cost = null;
+                    price.set(i, cost);
+                    Log.d(TAG, "afterTextChanged: failure");
                 }
                 price.add(cost);
             }
@@ -79,8 +82,12 @@ public class StoreIngredientAdaptor extends RecyclerView.Adapter<StoreIngredient
                 Double pricePer;
                 try{
                     pricePer = Double.parseDouble(viewHolder.qty.getText().toString());
+                    quantity.set(i, pricePer);
+                    Log.d(TAG, "afterTextChanged: success" + pricePer);
                 }catch (NumberFormatException e){
                     pricePer = null;
+                    quantity.set(i, pricePer);
+                    Log.d(TAG, "afterTextChanged: failure");
                 }
                 quantity.add(pricePer);
             }
@@ -90,7 +97,11 @@ public class StoreIngredientAdaptor extends RecyclerView.Adapter<StoreIngredient
 
     @Override
     public int getItemCount() {
-        return mIngredients.size();
+        try{
+            return mIngredients.size();
+        }catch (NullPointerException e){
+            return 0;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper{
@@ -281,6 +282,79 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return ingredients;
     }
 
+
+    public ArrayList<Store> getStores() {
+        // Query the database
+        String get_store = "SELECT " +
+                STORE_ID + ", " +
+                STORE_NAME +
+                " FROM " + STORE_TABLE + ";";
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(get_store, null);
+
+        // The ArrayList of ingredients to be returned
+        ArrayList<Store> stores = new ArrayList<>();
+
+        // Loop through the returned cursor
+        if (cursor.moveToFirst()) {
+            do {
+                // Get the information on the ingredient
+                int id = cursor.getInt(0);
+                String name = cursor.getString(1);
+                // Add the new ingredient to the list
+                stores.add(new Store(id, name, null));
+            } while (cursor.moveToNext());
+        }
+
+        // Close the db connection
+        cursor.close();
+        db.close();
+
+        // Return the list of ingredients from the database
+        return stores;
+    }
+    public ArrayList<Ingredient> getStoreIngredients(Store store){
+        // Query the database
+        ArrayList<Ingredient> ingredients = new ArrayList<>();
+        String get_store_products = "SELECT s." + STORE_NAME + ", i." +
+                INGREDIENTS_ID + ", i." + INGREDIENTS_NAME + ", i." + INGREDIENTS_MEASUREMENT_TYPE +
+                ", si." + STORE_INGREDIENTS_PRICE +  ", si." + STORE_INGREDIENTS_AMOUNT +
+                " FROM " + STORE_TABLE + " AS s" +
+                " INNER JOIN " + STORE_INGREDIENTS_TABLE + " AS si" +
+                " ON s." + STORE_ID + " = si." + STORE_INGREDIENTS_STORE_ID +
+                " INNER JOIN " + INGREDIENTS_TABLE + " AS i" +
+                " ON i." + INGREDIENTS_ID + " = si." + STORE_INGREDIENTS_INGREDIENT_ID +
+                " WHERE s.id = " + store.getId() + ";";
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(get_store_products, null);
+        System.out.println(get_store_products);
+
+        // Loop through the returned cursor
+        if (cursor.moveToFirst()) {
+            // Set the cursor name
+            //store.setName(cursor.getString(0));
+            do {
+                // Get the ingredient information
+                int id = cursor.getInt(1);
+                String name = cursor.getString(2);
+                String measurement_type = cursor.getString(3);
+                double price = cursor.getDouble(4);
+                double amount = cursor.getDouble(5);
+                // Create and insert the ingredient into the recipe object
+                Ingredient new_ingredient = new Ingredient(id, name, amount, measurement_type, price);
+                ingredients.add(new_ingredient);
+                //recipe.addIngredient(new_ingredient);
+            } while (cursor.moveToNext());
+        }
+
+        // Close the db connection
+        cursor.close();
+        db.close();
+
+        // Return the recipe
+        return ingredients;
+    }
+
     /** Gets all of the ingredients for the given recipe.
      *
      * @param recipe The given recipe.
@@ -338,6 +412,12 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = getWritableDatabase();
         db.delete(RECIPE_INGREDIENTS_TABLE, RECIPE_INGREDIENTS_RECIPE_ID + " = ?",
                 new String[] { String.valueOf(recipe.getId()) });
+        db.close();
+    }
+
+    public void deleteStores(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("delete from "+ STORE_TABLE);
         db.close();
     }
 }

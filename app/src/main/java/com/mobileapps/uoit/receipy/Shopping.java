@@ -91,7 +91,7 @@ public class Shopping extends AppCompatActivity {
                     intent.putExtra("Ingredients" + x, i);
                     x++;
                 }
-                intent.putExtra("total", x - 1);
+                intent.putExtra("total", x);
                 startActivity(intent);
             }
         });

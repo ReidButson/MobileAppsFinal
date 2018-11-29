@@ -26,7 +26,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recipe_item, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.store_item, viewGroup, false);
         StoreAdapter.ViewHolder viewHolder = new StoreAdapter.ViewHolder(view);
         return viewHolder;
     }
@@ -34,11 +34,11 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.store_name.setText(stores.get(i).getName());
-        viewHolder.price_text.setText(prices.get(i).toString());
+        viewHolder.price_text.setText(String.format("%.2f", prices.get(i)));
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                
             }
         });
     }

@@ -30,15 +30,13 @@ public class RecipeListActivity extends AppCompatActivity {
         recipe_holder = findViewById(R.id.recipe_holder);
         db = new DatabaseHelper(this);
 
-        //deleteChecked();
         addRecipeConfigure();
         initDb();
     }
     protected void onResume() {
         super.onResume();
         db = new DatabaseHelper(this);
-        initDb ();
-        //deleteChecked();
+        initDb();
         addRecipeConfigure();
     }
 
