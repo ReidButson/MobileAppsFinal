@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -121,6 +120,5 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             quantity = itemView.findViewById(R.id.quantity_entry);
             units = itemView.findViewById(R.id.units_entry);
         }
-
     }
 }
