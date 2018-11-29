@@ -36,11 +36,13 @@ public class ViewRecipe extends Activity {
         prevIng = db.getIngredients();
         ArrayList<Ingredient> ingredients;
         ingredients = db.getRecipeIngredients(recipe);
+
         for (int i =0; i < ingredients.size(); i++){
             names.add(ingredients.get(i).getName());
             quantity.add(ingredients.get(i).getAmount());
             units.add(ingredients.get(i).getUnits());
         }
+
         initAdapter();
         initUi();
     }
@@ -55,7 +57,7 @@ public class ViewRecipe extends Activity {
             @Override
             public void onClick(View v) {
                 names.add("");
-                quantity.add(0.0);
+                quantity.add(null);
                 units.add("");
                 initAdapter();
             }
@@ -71,15 +73,10 @@ public class ViewRecipe extends Activity {
                     Double mQty = quantity.get(i);
                     String mName = names.get(i);
                     String mUnits = units.get(i);
-                    Ingredient ingredient = checkIngredient(mName, mQty, mUnits);
+                    Ingredient ingredient = new Ingredient(checkIngredient(mName, mUnits), mName, mQty, mUnits);
                     ingredients.add(ingredient);
                 }
 
-                for(Ingredient i: ingredients){
-                    int x = 0;
-                    i.setAmount(quantity.get(x));
-                    x++;
-                }
                 recipe.setRecipe(ingredients);
                 db.clearRecipeIngredients(recipe);
                 db.insertRecipeIngredients(recipe);
@@ -105,17 +102,15 @@ public class ViewRecipe extends Activity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private Ingredient checkIngredient(String name,double quantity, String units){
+    private int checkIngredient(String name, String units){
         for(Ingredient i: prevIng){
             String ingredientName = i.getName();
             if (ingredientName.equals(name)){
-                return i;
+                return i.id;
             }
         }
-        Ingredient ingredient = new Ingredient(1, name, quantity, units);
-        db.insertIngredient(ingredient);
-        prevIng = db.getIngredients();
-        ingredient = prevIng.get(prevIng.size() - 1);
-        return ingredient;
+        Ingredient ingredient = new Ingredient(name, units);
+        int i = (int) db.insertIngredient(ingredient);
+        return i;
     }
 }

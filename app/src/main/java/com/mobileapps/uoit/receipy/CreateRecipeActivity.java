@@ -61,40 +61,32 @@ public class CreateRecipeActivity extends AppCompatActivity {
                     Double mQty = quantity.get(i);
                     String mName = names.get(i);
                     String mUnits = units.get(i);
-                    Ingredient ingredient = checkIngredient(mName, mQty, mUnits);
+                    Ingredient ingredient = new Ingredient(checkIngredient(mName, mUnits),mName, mQty, mUnits);
                     ingredients.add(ingredient);
                 }
 
-                for(Ingredient i: ingredients){
-                    int x = 0;
-                    i.setAmount(quantity.get(x));
-                    x++;
-                }
-
                 Recipe recipe = new Recipe(1,recipe_name,ingredients);
-                db.insertRecipe(recipe);
-                ArrayList<Recipe> recipes = db.getRecipes();
-                int x = recipes.get(recipes.size() - 1).getId();
-                recipe = new Recipe(x,recipe_name,ingredients);
+                int x = (int) db.insertRecipe(recipe);
+                recipe = new Recipe(x, recipe_name, ingredients);
                 db.insertRecipeIngredients(recipe);
+
                 finish();
             }
         });
     }
 
-    private Ingredient checkIngredient(String name,double quantity, String units){
+    private int checkIngredient(String name, String units){
         for(Ingredient i: prevIng){
             String ingredientName = i.getName();
             if (ingredientName.equals(name)){
                 Log.d(TAG, "checkIngredient: Duplicate food thing");
-                return i;
+                return i.id;
             }
         }
-        Ingredient ingredient = new Ingredient(1, name, quantity, units);
-        db.insertIngredient(ingredient);
+        Ingredient ingredient = new Ingredient(name, units);
+        int  i = (int) db.insertIngredient(ingredient);
         prevIng = db.getIngredients();
-        ingredient = prevIng.get(prevIng.size() - 1);
-        return ingredient;
+        return i;
     }
 
     private void initAdapter(){
@@ -105,7 +97,7 @@ public class CreateRecipeActivity extends AppCompatActivity {
     }
 
     private void newIngredient(View v){
-        quantity.add(0.0);
+        quantity.add(null);
         names.add("");
         units.add("");
         initAdapter();

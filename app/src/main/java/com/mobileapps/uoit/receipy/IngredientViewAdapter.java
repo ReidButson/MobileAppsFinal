@@ -38,7 +38,12 @@ public class IngredientViewAdapter extends RecyclerView.Adapter<IngredientViewAd
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         viewHolder.ingredient.setText(mIngredients.get(i));
-        viewHolder.quantity.setText(Double.toString(mQuantity.get(i)));
+        try{
+            viewHolder.quantity.setText(Double.toString(mQuantity.get(i)));
+        }catch (NullPointerException e){
+            viewHolder.quantity.setText(null);
+        }
+
         viewHolder.units.setText(mUnits.get(i));
 
         viewHolder.ingredient.addTextChangedListener(new TextWatcher() {
