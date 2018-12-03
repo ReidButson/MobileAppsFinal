@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-public class CreateStore extends AppCompatActivity {
+public class ShoppingList extends AppCompatActivity {
     Button backBtn, doneBtn;
     EditText storeText;
     RecyclerView ingredientView;
@@ -21,11 +21,11 @@ public class CreateStore extends AppCompatActivity {
     ArrayList<Double> qty = new ArrayList<>();
     ArrayList<Ingredient> ingredients = new ArrayList<>();
     Intent intent;
-    private static final String TAG = "CreateStore";
+    private static final String TAG = "ShoppingList";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_store);
+        setContentView(R.layout.activity_shopping_list);
         db = new DatabaseHelper(this);
         initUi();
         getIngredient();

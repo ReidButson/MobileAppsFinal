@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Shops extends AppCompatActivity {
@@ -111,7 +110,7 @@ public class Shops extends AppCompatActivity {
     }
 
     private Intent packageIngredients(){
-        Intent parcel = new Intent(this, CreateStore.class);
+        Intent parcel = new Intent(this, ShoppingList.class);
         int x = 0;
         for(Ingredient i: ingredients) {
             parcel.putExtra("Ingredients" + x, i);
