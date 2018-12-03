@@ -31,5 +31,8 @@
     <string name="store_name">Name:</string>
     <string name="hint_store">Store Name</string>
 
+    <!-- Store Item -->
+    <string name="btn_go_shopping">Go Shopping</string>
+
 
 </resources>
