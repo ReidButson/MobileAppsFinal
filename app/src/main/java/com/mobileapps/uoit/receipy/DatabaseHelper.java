@@ -2,6 +2,7 @@ package com.mobileapps.uoit.receipy;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -218,6 +219,12 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return id;
     }
 
+    public void insertStoreIngredients(Store store, ArrayList<Ingredient> ingredients){
+        for(Ingredient i: ingredients){
+            insertStoreIngredient(store, i);
+        }
+    }
+
     /** Gets a list of recipes from the database.
      *
      * @return An ArrayList of Recipe objects.
@@ -313,6 +320,24 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         // Return the list of ingredients from the database
         return stores;
     }
+
+    /** Gets an ingredient by checking the database for a given name
+     *
+     * @param name The name of the ingredient.
+     * @return The ingredient from the database or null if it was not found.
+     */
+    public Ingredient getIngredientByName(String name) {
+        String sql = String.format("SELECT %s FROM %s WHERE %s=?",
+                INGREDIENTS_ID, INGREDIENTS_TABLE, INGREDIENTS_NAME);
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(sql, new String[] {name});
+
+        // Check to make sure only 1 ingredient was returned
+        if (cursor.getCount() == 1) {
+            // TODO BRADON CONTINUE HERE
+        }
+    }
+
     public ArrayList<Ingredient> getStoreIngredients(Store store){
         // Query the database
         ArrayList<Ingredient> ingredients = new ArrayList<>();
@@ -355,12 +380,31 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return ingredients;
     }
 
+    /** Gets a recipe from the database with the given name
+     *
+     * @param name The name of the recipe.
+     * @return The recipe with it's ingredients.
+     */
+    public Recipe getRecipeByName(String name) {
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(String.format(
+                "SELECT %s FROM %s WHERE %s=?", RECIPE_ID, RECIPE_TABLE, RECIPE_NAME),
+                new String[] {name});
+        if (cursor.getCount() == 1) {
+            int recipe_id = cursor.getInt(0);
+            return getRecipeIngredients(recipe_id);
+        }
+        else {
+            return null;
+        }
+    }
+
     /** Gets all of the ingredients for the given recipe.
      *
-     * @param recipe The given recipe.
+     * @param id The given recipe id.
      * @return The recipe with the ingredients added.
      */
-    public ArrayList<Ingredient> getRecipeIngredients(Recipe recipe) {
+    public Recipe getRecipeIngredients(int id) {
         // Query the database
         ArrayList<Ingredient> ingredients = new ArrayList<>();
         String get_recipe_ingredients = "SELECT r." + RECIPE_NAME + ", i." +
@@ -371,18 +415,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 " ON r." + RECIPE_ID + " = ri." + RECIPE_INGREDIENTS_RECIPE_ID +
                 " INNER JOIN " + INGREDIENTS_TABLE + " AS i" +
                 " ON i." + INGREDIENTS_ID + " = ri." + RECIPE_INGREDIENTS_INGREDIENT_ID +
-                " WHERE r.id = " + recipe.getId() + ";";
+                " WHERE r.id = " + id + ";";
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(get_recipe_ingredients, null);
         System.out.println(get_recipe_ingredients);
 
+        // The recipe to be returned
+        Recipe recipe = null;
+
         // Loop through the returned cursor
         if (cursor.moveToFirst()) {
-            // Set the cursor name
-            recipe.setName(cursor.getString(0));
+            // Create the recipe
+            recipe = new Recipe(id, cursor.getString(0));
             do {
                 // Get the ingredient information
-                int id = cursor.getInt(1);
+                int recipe_id = cursor.getInt(1);
                 String name = cursor.getString(2);
                 String measurement_type = cursor.getString(3);
                 double amount = cursor.getDouble(4);
@@ -398,7 +445,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.close();
 
         // Return the recipe
-        return ingredients;
+        return recipe;
     }
 
     public void deleteRecipe(Recipe recipe){
@@ -412,6 +459,28 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = getWritableDatabase();
         db.delete(RECIPE_INGREDIENTS_TABLE, RECIPE_INGREDIENTS_RECIPE_ID + " = ?",
                 new String[] { String.valueOf(recipe.getId()) });
+        db.close();
+    }
+
+    public void deleteStore(Store store){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(STORE_TABLE, STORE_ID + " = ?",
+                new String[] { String.valueOf(store.getId()) });
+
+        db.delete(STORE_INGREDIENTS_TABLE, STORE_ID + " = ?", new String[] {String.valueOf(store.getId())});
+        db.close();
+    }
+
+    public void clearStoreIngredients(Store store){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(STORE_INGREDIENTS_TABLE,  STORE_ID + " = ?",
+                new String[] { String.valueOf(store.getId()) });
+        db.close();
+    }
+
+    public void clearShit(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("delete from " + STORE_INGREDIENTS_TABLE);
         db.close();
     }
 

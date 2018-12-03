@@ -35,8 +35,10 @@ public class Shopping extends AppCompatActivity {
         db = new DatabaseHelper(this);
         initUI();
         initRecycler();
-        ingredients = db.getIngredients();
-        recipes = db.getRecipes();
+        // The ArrayLists of added recipes and ingredients to pass to the Shops intent
+        ingredients = new ArrayList<>();
+        recipes = new ArrayList<>();
+        //db.clearShit();
     }
 
     private void initUI(){
@@ -49,17 +51,8 @@ public class Shopping extends AppCompatActivity {
         add_recipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean found = false;
-                String name = recipe_text.getText().toString();
-                for(Recipe r: recipes){
-                    if (r.name.equals(name)){
-                        getIngredient(r);
-                        found = true;
-                    }
-                }
-                if (found == false){
-                    Toast.makeText(Shopping.this, "Recipe not found", Toast.LENGTH_SHORT).show();
-                }
+                Recipe searched_recipe = db.getRecipeByName(recipe_text.getText().toString());
+                recipes.add(searched_recipe);
                 recipe_text.setText("");
             }
         });

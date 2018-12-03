@@ -25,7 +25,6 @@ public class StoreIngredientAdaptor extends RecyclerView.Adapter<StoreIngredient
         mIngredients = ingredients;
         this.price = price;
         this.quantity = quantity;
-
     }
 
     @NonNull

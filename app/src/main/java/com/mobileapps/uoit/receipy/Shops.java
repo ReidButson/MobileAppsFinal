@@ -15,11 +15,12 @@ import java.util.ArrayList;
 
 public class Shops extends AppCompatActivity {
     ArrayList<Ingredient> ingredients = new ArrayList<>();
-    ArrayList<Store> stores;
+    static StoreAdapter adapter;
+    static ArrayList<Store> stores;
+    static RecyclerView recyclerView;
     ArrayList<ArrayList<Ingredient>> store = new ArrayList<>();
     ArrayList<Ingredient> price = new ArrayList<>();
     ArrayList<Double> prices = new ArrayList<>();
-    ArrayList<Ingredient> removable = new ArrayList<>();
     Button create_store;
     Intent intent;
     Context context = this;
@@ -34,6 +35,7 @@ public class Shops extends AppCompatActivity {
         initUi();
         initStores();
         getIngredient();
+
         //db.deleteStores();
     }
 
@@ -42,11 +44,15 @@ public class Shops extends AppCompatActivity {
         super.onResume();
         db = new DatabaseHelper(this);
         stores = db.getStores();
+        store.clear();
+        prices.clear();
         initStores();
         getPrices();
     }
 
-
+    /** Initializes all the ui components on the activity.
+     *
+     */
     private void initUi(){
         create_store = findViewById(R.id.new_store_button);
         create_store.setOnClickListener(new View.OnClickListener() {
@@ -58,10 +64,14 @@ public class Shops extends AppCompatActivity {
         });
     }
 
+    /** Gets all the ingredients passed from the {{@link Shopping}} activity and places them in the
+     * ingredients ArrayList.
+     *
+     */
     private void getIngredient(){
         intent = getIntent();
         int total = intent.getIntExtra("total", 0);
-        Log.d(TAG, "getIngredient: " + total);
+        Log.d(TAG, "getIngredient total: " + total);
         for(int i = 0; i < total; i++){
             Ingredient ingredient = (Ingredient) intent.getSerializableExtra("Ingredients"+i);
             ingredients.add(ingredient);
@@ -91,10 +101,10 @@ public class Shops extends AppCompatActivity {
 
         for(Ingredient y : ingredients){
             amounts.add(y.getAmount());
-            Log.d(TAG, "getPrices: "+ y.getAmount());
+            //Log.d(TAG, "getAmount: "+ y.getAmount());
         }
 
-        for(ArrayList<Ingredient> s : store){
+/*        for(ArrayList<Ingredient> s : store){
             int counter = 0;
             for(Ingredient i:s){
                 sPrice = i.getPrice();
@@ -105,11 +115,27 @@ public class Shops extends AppCompatActivity {
             Log.d(TAG, "getPrices: " + totalTemp);
             prices.add(totalTemp);
             totalTemp = 0.0;
+ */
+        // Loop through each store, and track the price it would cost to shop at that store
+        for(ArrayList<Ingredient> s : store){
+            for(int counter = 0; counter < s.size(); counter++){
+                sPrice = s.get(counter).getPrice();
+                sAmount = s.get(counter).getAmount();
+                totalTemp += sPrice/sAmount * amounts.get(counter);
+            }
+            Log.d(TAG, "getPrices: " + totalTemp);
+            prices.add(totalTemp);
+            totalTemp = 0.0;
         }
 
         initStoreView();
     }
 
+    /** Creates an intent for moving ingredient objects to the
+     * {{@link com.mobileapps.uoit.receipy.CreateStore} activity
+     *
+     * @return The intent to be used to run the {{@link CreateStore}} activity.
+     */
     private Intent packageIngredients(){
         Intent parcel = new Intent(this, CreateStore.class);
         int x = 0;
@@ -122,8 +148,8 @@ public class Shops extends AppCompatActivity {
     }
 
     private void initStoreView(){
-        RecyclerView recyclerView = findViewById(R.id.store_view);
-        StoreAdapter adapter = new StoreAdapter(this, stores, prices);
+        recyclerView = findViewById(R.id.store_view);
+        adapter = new StoreAdapter(this, stores, prices, ingredients);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -133,5 +159,13 @@ public class Shops extends AppCompatActivity {
             price = db.getStoreIngredients(s);
             store.add(price);
         }
+    }
+
+    public static void removeItem(int position) {
+        stores.remove(position);
+        recyclerView.removeViewAt(position);
+        adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position, stores.size());
+        adapter.notifyDataSetChanged();
     }
 }

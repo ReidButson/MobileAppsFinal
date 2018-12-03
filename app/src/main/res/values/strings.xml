@@ -33,6 +33,6 @@
 
     <!-- Store Item -->
     <string name="btn_go_shopping">Go Shopping</string>
-
+    <string name="btn_delete_store">Delete</string>
 
 </resources>
