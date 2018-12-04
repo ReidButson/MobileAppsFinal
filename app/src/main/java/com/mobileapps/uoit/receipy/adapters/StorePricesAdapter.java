@@ -19,16 +19,15 @@ import com.mobileapps.uoit.receipy.objects.Ingredient;
 import com.mobileapps.uoit.receipy.objects.Store;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class StorePricesAdapter extends RecyclerView.Adapter<StorePricesAdapter.ViewHolder>{
 
     ArrayList<Store> stores;
-    ArrayList<Double> prices;
     ArrayList<Ingredient> store_ingredients;
     Context mContext;
 
-    public StorePricesAdapter(Context context, ArrayList<Store> stores, ArrayList<Double> prices, ArrayList<Ingredient> store_ingredients){
-        this.prices = prices;
+    public StorePricesAdapter(Context context, ArrayList<Store> stores, ArrayList<Ingredient> store_ingredients){
         this.stores = stores;
         this.store_ingredients = store_ingredients;
         mContext = context;
@@ -45,7 +44,9 @@ public class StorePricesAdapter extends RecyclerView.Adapter<StorePricesAdapter.
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         viewHolder.store_name.setText(stores.get(i).getName());
-        viewHolder.price_text.setText(String.format("%.2f", prices.get(i)));
+        viewHolder.price_text.setText(String.format(Locale.getDefault(),
+                "$%.2f, %d items not found",
+                stores.get(i).getTotal_price(), stores.get(i).getTotal_items_not_found()));
         viewHolder.parentLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

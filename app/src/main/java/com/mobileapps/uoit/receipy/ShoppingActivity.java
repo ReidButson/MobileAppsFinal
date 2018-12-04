@@ -18,6 +18,9 @@ import com.mobileapps.uoit.receipy.objects.Recipe;
 
 import java.util.ArrayList;
 
+/** Allows a user to create a shopping list to determine the best price of items
+ *
+ */
 public class ShoppingActivity extends AppCompatActivity {
     ImageButton add_recipe;
     ImageButton add_ingredient;

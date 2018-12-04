@@ -483,6 +483,47 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.close();
     }
 
+    /** Get the total price for the ingredients at the given store.
+     *
+     * @param store The store to check prices for.
+     * @param ingredients The ingredient list to check the prices of at the store.
+     * @return The store with the price added to it.
+     */
+    public Store getStorePrices(Store store, ArrayList<Ingredient> ingredients) {
+        SQLiteDatabase db = getReadableDatabase();
+        // Reset the values in the store
+        store.setTotal_items_not_found(0);
+        store.setTotal_price(0);
+        String sql = String.format("SELECT %s FROM %s WHERE %s = ? AND %s = ?",
+                STORE_INGREDIENTS_PRICE, STORE_INGREDIENTS_TABLE, STORE_INGREDIENTS_STORE_ID,
+                STORE_INGREDIENTS_INGREDIENT_ID);
+        // Loop through the ingredients
+        for (Ingredient ingredient: ingredients) {
+            Cursor cursor = db.rawQuery(sql, new String[]
+                    {Integer.toString(store.getId()), Integer.toString(ingredient.getId())});
+            // Move the cursor to the item
+            if (cursor.moveToFirst()) {
+                // Get the item price from the cursor
+                double item_price = cursor.getDouble(0);
+                if (item_price == 0) {
+                    store.addOneUnfound();
+                }
+                else {
+                    // Add the price to the store
+                    store.addToTotal(item_price);
+                }
+            }
+            else {
+                // Signal that the database didn't have a value for an item
+                store.addOneUnfound();
+            }
+        }
+
+        // Return the store with the new values
+        return new Store(store.getId(), store.getName(), store.getAddress(), store.getTotal_price(),
+                store.getTotal_items_not_found());
+    }
+
     public void deleteStore(Store store){
         SQLiteDatabase db = getWritableDatabase();
         db.delete(STORE_TABLE, STORE_ID + " = ?",

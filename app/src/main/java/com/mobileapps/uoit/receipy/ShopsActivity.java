@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+/** Allows a user to select their desired shop based on known prices.
+ *
+ */
 public class ShopsActivity extends AppCompatActivity {
     ArrayList<Ingredient> ingredients = new ArrayList<>();
     static StorePricesAdapter adapter;
@@ -35,12 +38,13 @@ public class ShopsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shops);
+        // Get a new database helper
         db = new DatabaseHelper(this);
-        stores = db.getStores();
+        // Initialize ui components
         initUi();
-        initStores();
         // Receive all ingredients from the intent here
         getIntentExtras();
+        getStorePrices();
 
         //db.deleteStores();
     }
@@ -49,11 +53,7 @@ public class ShopsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         db = new DatabaseHelper(this);
-        stores = db.getStores();
-        store.clear();
-        prices.clear();
-        initStores();
-        getPrices();
+        // Get all the prices for the stores
     }
 
     /** Initializes all the ui components on the activity.
@@ -68,7 +68,16 @@ public class ShopsActivity extends AppCompatActivity {
                 startActivity(to_create_store);
             }
         });
+
     }
+
+    private void initRecycler() {
+        recyclerView = findViewById(R.id.store_view);
+        // Get all the stores
+        stores = db.getStores();
+        adapter = new StorePricesAdapter(this, stores, ingredients);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));    }
 
     /** Gets all the ingredients passed from the {{@link ShoppingActivity}} activity and places them in the
      * ingredients ArrayList.
@@ -150,8 +159,6 @@ public class ShopsActivity extends AppCompatActivity {
             prices.add(totalTemp);
             totalTemp = 0.0;
         }
-
-        initStoreView();
     }
 
     /** Creates an intent for moving ingredient objects to the
@@ -170,18 +177,16 @@ public class ShopsActivity extends AppCompatActivity {
         return parcel;
     }
 
-    private void initStoreView(){
-        recyclerView = findViewById(R.id.store_view);
-        adapter = new StorePricesAdapter(this, stores, prices, ingredients);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    private void initStores(){
-        for(Store s: stores) {
-            price = db.getStoreIngredients(s);
-            store.add(price);
+    private void getStorePrices(){
+        // Loop through the stores
+        for (int i = 0; i < stores.size(); i++) {
+            // Update the store with the prices
+            Store old_store = stores.get(i);
+            Store new_store = db.getStorePrices(old_store, ingredients);
+            stores.set(i, new_store);
         }
+        // Initialize the recycler and adapter with the new values
+        initRecycler();
     }
 
     public static void removeItem(int position) {
