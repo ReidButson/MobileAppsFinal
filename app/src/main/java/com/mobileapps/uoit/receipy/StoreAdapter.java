@@ -72,9 +72,11 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
         });
 
         viewHolder.del_btn.setOnClickListener(new View.OnClickListener() {
+            DatabaseHelper dbh = new DatabaseHelper(mContext);
             @Override
             public void onClick(View v) {
-                Shopping.removeItem(i);
+                Shops.removeItem(i);
+                dbh.deleteStore(stores.get(i));
             }
         });
 
