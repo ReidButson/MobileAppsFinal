@@ -556,7 +556,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     public void deleteStore(Store store) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(RECIPE_TABLE, RECIPE_ID + " = ?",
+        db.delete(STORE_TABLE, STORE_ID + " = ?",
                 new String[]{String.valueOf(store.getId())});
         db.close();
     }
