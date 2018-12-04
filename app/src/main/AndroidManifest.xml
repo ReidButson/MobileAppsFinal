@@ -24,7 +24,8 @@
         <activity android:name=".Shopping" />
         <activity android:name=".Shops" />
         <activity android:name=".CreateStore" />
-        <activity android:name=".ShoppingList"></activity>
+        <activity android:name=".ShoppingList" />
+        <activity android:name=".LogReceiptActivity"></activity>
     </application>
 
 </manifest>

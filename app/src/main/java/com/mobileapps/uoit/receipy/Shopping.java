@@ -38,7 +38,8 @@ public class Shopping extends AppCompatActivity {
         // The ArrayLists of added recipes and ingredients to pass to the Shops intent
         ingredients = new ArrayList<>();
         recipes = new ArrayList<>();
-        //db.clearShit();
+        // Used when debugging to clear the database.
+        // db.clearShit();
     }
 
     private void initUI(){
@@ -51,50 +52,55 @@ public class Shopping extends AppCompatActivity {
         add_recipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Search for the recipe
                 Recipe searched_recipe = db.getRecipeByName(recipe_text.getText().toString());
-                recipes.add(searched_recipe);
-                recipe_text.setText("");
+                // If the recipe isn't found, show an error message
+                if (searched_recipe == null) {
+                    Toast.makeText(Shopping.this, "Recipe not found", Toast.LENGTH_SHORT).show();
+                }
+                // Add it to the list if it was found
+                else {
+                    recipes.add(searched_recipe);
+                    recipe_text.setText("");
+                    ingredient_list.addAll(searched_recipe.getIngredients());
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
 
         add_ingredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean found = false;
-                String name = ingredient_text.getText().toString();
-                for(Ingredient i: ingredients){
-                    if(name.equals(i.name)){
-                        ingredient_list.add(i);
-                        found = true;
-                    }
-                }
-                if (found != true){
+                // Search for the ingredient
+                Ingredient searched_ingredient = db.getIngredientByName(
+                        ingredient_text.getText().toString());
+                // If the ingredient isn't found, show an error message
+                if (searched_ingredient == null) {
                     Toast.makeText(Shopping.this, "Ingredient not found", Toast.LENGTH_SHORT).show();
                 }
-                ingredient_text.setText("");
+                // Add it to the list if it was found
+                else {
+                    ingredients.add(searched_ingredient);
+                    ingredient_text.setText("");
+                    ingredient_list.add(searched_ingredient);
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Create the intent to go to the Shops activity
                 Intent intent = new Intent(context, Shops.class);
-                int x = 0;
-                for(Ingredient i: ingredient_list){
-                    intent.putExtra("Ingredients" + x, i);
-                    x++;
-                }
-                intent.putExtra("total", x);
-                startActivity(intent);
+                // Pass the ingredients and recipes
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("INGREDIENTS", ingredients);
+                bundle.putSerializable("RECIPES", recipes);
+                intent.putExtras(bundle);
             }
         });
 
-    }
-
-    private void getIngredient(Recipe recipe){
-        for(Ingredient i: db.getRecipeIngredients(recipe)){
-            ingredient_list.add(i);
-        }
     }
 
     private void initRecycler(){

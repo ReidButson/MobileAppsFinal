@@ -34,5 +34,8 @@
     <!-- Store Item -->
     <string name="btn_go_shopping">Go Shopping</string>
     <string name="btn_delete_store">Delete</string>
+    <string name="create_store_button">Create Store</string>
+    <string name="select_store_btn">Select</string>
+    <string name="store_button">Stores</string>
 
 </resources>

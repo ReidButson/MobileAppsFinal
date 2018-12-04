@@ -219,6 +219,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return id;
     }
 
+    /** Inserts an ArrayList of ingredients into the database using insertStoreIngredient.
+     *
+     * @param store The store to insert to.
+     * @param ingredients The ingredients to insert into the store.
+     */
     public void insertStoreIngredients(Store store, ArrayList<Ingredient> ingredients){
         for(Ingredient i: ingredients){
             insertStoreIngredient(store, i);
@@ -294,7 +299,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         // Query the database
         String get_store = "SELECT " +
                 STORE_ID + ", " +
-                STORE_NAME +
+                STORE_NAME + ", " +
+                STORE_ADDRESS +
                 " FROM " + STORE_TABLE + ";";
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(get_store, null);
@@ -308,8 +314,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 // Get the information on the ingredient
                 int id = cursor.getInt(0);
                 String name = cursor.getString(1);
+                String address = cursor.getString(2);
                 // Add the new ingredient to the list
-                stores.add(new Store(id, name, null));
+                stores.add(new Store(id, name, address));
             } while (cursor.moveToNext());
         }
 
@@ -327,14 +334,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
      * @return The ingredient from the database or null if it was not found.
      */
     public Ingredient getIngredientByName(String name) {
-        String sql = String.format("SELECT %s FROM %s WHERE %s=?",
-                INGREDIENTS_ID, INGREDIENTS_TABLE, INGREDIENTS_NAME);
+        String sql = String.format("SELECT %s, %s FROM %s WHERE %s=?",
+                INGREDIENTS_ID, INGREDIENTS_MEASUREMENT_TYPE, INGREDIENTS_TABLE, INGREDIENTS_NAME);
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, new String[] {name});
 
         // Check to make sure only 1 ingredient was returned
         if (cursor.getCount() == 1) {
-            // TODO BRADON CONTINUE HERE
+            cursor.moveToFirst();
+            String ingredient_name = name;
+            int ingredient_id = cursor.getInt(0);
+            String ingredient_measure = cursor.getString(1);
+            return new Ingredient(ingredient_id, ingredient_name, ingredient_measure);
+        }
+        else {
+            return null;
         }
     }
 
@@ -391,6 +405,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 "SELECT %s FROM %s WHERE %s=?", RECIPE_ID, RECIPE_TABLE, RECIPE_NAME),
                 new String[] {name});
         if (cursor.getCount() == 1) {
+            cursor.moveToFirst();
             int recipe_id = cursor.getInt(0);
             return getRecipeIngredients(recipe_id);
         }
@@ -407,18 +422,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public Recipe getRecipeIngredients(int id) {
         // Query the database
         ArrayList<Ingredient> ingredients = new ArrayList<>();
-        String get_recipe_ingredients = "SELECT r." + RECIPE_NAME + ", i." +
-                INGREDIENTS_ID + ", i." + INGREDIENTS_NAME + ", i." + INGREDIENTS_MEASUREMENT_TYPE +
-                ", ri." + RECIPE_INGREDIENTS_AMOUNT +
-                " FROM " + RECIPE_TABLE + " AS r" +
-                " INNER JOIN " + RECIPE_INGREDIENTS_TABLE + " AS ri" +
-                " ON r." + RECIPE_ID + " = ri." + RECIPE_INGREDIENTS_RECIPE_ID +
-                " INNER JOIN " + INGREDIENTS_TABLE + " AS i" +
-                " ON i." + INGREDIENTS_ID + " = ri." + RECIPE_INGREDIENTS_INGREDIENT_ID +
-                " WHERE r.id = " + id + ";";
+        String get_recipe_ingredients = String.format("SELECT ri.%s, r.%s, i.%s, i.%s, ri.%s, " +
+                        "i.%s\n" +
+                "FROM %s AS ri\n" +
+                "INNER JOIN %s AS r ON r.%s=ri.%s\n" +
+                "INNER JOIN %s AS i ON i.%s=ri.%s\n" +
+                "WHERE r.%s=?",
+                RECIPE_INGREDIENTS_ID, RECIPE_NAME, INGREDIENTS_ID, INGREDIENTS_NAME,
+                RECIPE_INGREDIENTS_AMOUNT, INGREDIENTS_MEASUREMENT_TYPE,
+                RECIPE_INGREDIENTS_TABLE,
+                RECIPE_TABLE, RECIPE_ID, RECIPE_INGREDIENTS_RECIPE_ID,
+                INGREDIENTS_TABLE, INGREDIENTS_ID, RECIPE_INGREDIENTS_INGREDIENT_ID,
+                RECIPE_ID
+                );
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(get_recipe_ingredients, null);
-        System.out.println(get_recipe_ingredients);
+        Cursor cursor = db.rawQuery(get_recipe_ingredients, new String[] {Integer.toString(id)});
 
         // The recipe to be returned
         Recipe recipe = null;
@@ -426,17 +444,18 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         // Loop through the returned cursor
         if (cursor.moveToFirst()) {
             // Create the recipe
-            recipe = new Recipe(id, cursor.getString(0));
+            recipe = new Recipe(id, cursor.getString(1));
             do {
                 // Get the ingredient information
-                int recipe_id = cursor.getInt(1);
-                String name = cursor.getString(2);
-                String measurement_type = cursor.getString(3);
-                double amount = cursor.getDouble(4);
+                int ingredient_id = cursor.getInt(2);
+                String ingredient_name = cursor.getString(3);
+                double ingredient_amount = cursor.getDouble(4);
+                String ingredient_measure = cursor.getString(5);
                 // Create and insert the ingredient into the recipe object
-                Ingredient new_ingredient = new Ingredient(id, name, amount, measurement_type);
+                Ingredient new_ingredient = new Ingredient(ingredient_id, ingredient_name,
+                        ingredient_amount, ingredient_measure);
                 ingredients.add(new_ingredient);
-                //recipe.addIngredient(new_ingredient);
+                recipe.addIngredient(new_ingredient);
             } while (cursor.moveToNext());
         }
 

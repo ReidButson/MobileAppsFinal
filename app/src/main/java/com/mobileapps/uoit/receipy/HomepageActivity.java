@@ -27,4 +27,9 @@ public class HomepageActivity extends AppCompatActivity {
         Intent to_shopping = new Intent(this, Shopping.class);
         startActivity(to_shopping);
     }
+
+    public void addShopButton (View v) {
+        Intent to_add_shop = new Intent(this, LogReceiptActivity.class);
+        startActivity(to_add_shop);
+    }
 }

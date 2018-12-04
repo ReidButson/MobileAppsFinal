@@ -10,12 +10,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Shops extends AppCompatActivity {
     ArrayList<Ingredient> ingredients = new ArrayList<>();
-    static StoreAdapter adapter;
+    static StorePricesAdapter adapter;
     static ArrayList<Store> stores;
     static RecyclerView recyclerView;
     ArrayList<ArrayList<Ingredient>> store = new ArrayList<>();
@@ -77,8 +76,6 @@ public class Shops extends AppCompatActivity {
             ingredients.add(ingredient);
             Log.d(TAG, "getIngredient: " + ingredient.getName());
         }
-
-
     }
 
     private void getPrices(){
@@ -88,11 +85,11 @@ public class Shops extends AppCompatActivity {
         for (ArrayList<Ingredient> i : store){
             for (int counter = 0; counter<i.size();counter++){
                 for(int inner = 0; inner<ingredients.size();inner++){
-                    if(ingredients.get(inner).getName().equals(i.get(counter).getName())!= true){
+                    if(ingredients.get(inner).getName().equals(i.get(counter).getName())){
                         found = true;
                     }
                 }
-                if (found == false){
+                if (!found){
                     i.remove(counter);
                 }
                 found = false;
@@ -149,7 +146,7 @@ public class Shops extends AppCompatActivity {
 
     private void initStoreView(){
         recyclerView = findViewById(R.id.store_view);
-        adapter = new StoreAdapter(this, stores, prices, ingredients);
+        adapter = new StorePricesAdapter(this, stores, prices, ingredients);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

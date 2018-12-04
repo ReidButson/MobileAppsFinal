@@ -1,6 +1,5 @@
 package com.mobileapps.uoit.receipy;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,9 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ViewRecipe extends Activity {
@@ -35,7 +31,7 @@ public class ViewRecipe extends Activity {
         recipe = (Recipe) getIntent().getSerializableExtra("recipe");
         prevIng = db.getIngredients();
         ArrayList<Ingredient> ingredients;
-        ingredients = db.getRecipeIngredients(recipe);
+        ingredients = recipe.getIngredients();
 
         for (int i =0; i < ingredients.size(); i++){
             names.add(ingredients.get(i).getName());
@@ -46,8 +42,6 @@ public class ViewRecipe extends Activity {
         initAdapter();
         initUi();
     }
-
-
 
     public void initUi(){
         recipeText = findViewById(R.id.recipe_name_txt2);
