@@ -47,8 +47,6 @@ public class CreateStore extends AppCompatActivity {
                 int y = 0;
                 for(Ingredient i : ingredients){
                     Log.d(TAG, "onClick: "+ y);
-                    i.setAmount(qty.get(y));
-                    i.setPrice(price.get(y));
                     db.insertStoreIngredient(store, i);
                     y++;
                 }

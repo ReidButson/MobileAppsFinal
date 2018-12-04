@@ -32,13 +32,13 @@ public class ShoppingIngredientAdapter extends RecyclerView.Adapter<ShoppingIngr
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        viewHolder.ingredient.setText(mIngredients.get(i).getName());
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
+        viewHolder.ingredient.setText(mIngredients.get(viewHolder.getAdapterPosition()).getName());
         viewHolder.delete_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Deleting " + mIngredients.get(i).getName(), Toast.LENGTH_SHORT).show();
-                Shopping.removeItem(i);
+                Toast.makeText(mContext, "Deleting " + mIngredients.get(viewHolder.getAdapterPosition()).getName(), Toast.LENGTH_SHORT).show();
+                Shopping.removeItem(viewHolder.getAdapterPosition());
             }
         });
 

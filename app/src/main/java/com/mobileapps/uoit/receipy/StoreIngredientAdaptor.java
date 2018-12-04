@@ -34,8 +34,8 @@ public class StoreIngredientAdaptor extends RecyclerView.Adapter<StoreIngredient
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        viewHolder.ingredient.setText(mIngredients.get(i).getName());
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
+        viewHolder.ingredient.setText(mIngredients.get(viewHolder.getAdapterPosition()).getName());
         viewHolder.priceText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -57,7 +57,7 @@ public class StoreIngredientAdaptor extends RecyclerView.Adapter<StoreIngredient
                     cost = -1.0;
                     Log.d(TAG, "afterTextChanged: failure");
                 } finally {
-                    mIngredients.get(i).setPrice(cost);
+                    mIngredients.get(viewHolder.getAdapterPosition()).setPrice(cost);
                 }
             }
         });

@@ -36,7 +36,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         final Store current_store = stores.get(i);
         viewHolder.store_name.setText(current_store.getName());
         viewHolder.price_text.setText(String.format(Locale.getDefault(),
@@ -75,8 +75,8 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
             DatabaseHelper dbh = new DatabaseHelper(mContext);
             @Override
             public void onClick(View v) {
-                Shops.removeItem(i);
-                dbh.deleteStore(stores.get(i));
+                dbh.deleteStore(stores.get(viewHolder.getAdapterPosition()));
+                Shops.removeItem(viewHolder.getAdapterPosition());
             }
         });
 
