@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         final Store current_store = stores.get(i);
         viewHolder.store_name.setText(current_store.getName());
         viewHolder.price_text.setText(String.format(Locale.getDefault(),
@@ -52,6 +53,31 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
                 mContext.startActivity(intent);
             }
         });
+
+        viewHolder.parentLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (viewHolder.del_btn.getVisibility() == View.GONE)
+                    viewHolder.del_btn.setVisibility(View.VISIBLE);
+                return true;
+            }
+        });
+
+        viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewHolder.del_btn.getVisibility() == View.VISIBLE)
+                    viewHolder.del_btn.setVisibility(View.GONE);
+            }
+        });
+
+        viewHolder.del_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Shopping.removeItem(i);
+            }
+        });
+
     }
 
     @Override
@@ -64,13 +90,15 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
         TextView price_text;
         TextView store_name;
         Button go_shopping_btn;
-        RelativeLayout parentLayout;
+        Button del_btn;
+        TableLayout parentLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             store_name = itemView.findViewById(R.id.store_name_text);
             price_text = itemView.findViewById(R.id.price_text);
             go_shopping_btn = itemView.findViewById(R.id.go_shopping_btn);
+            del_btn = itemView.findViewById(R.id.del_btn);
             parentLayout = itemView.findViewById(R.id.parent_id);
         }
     }

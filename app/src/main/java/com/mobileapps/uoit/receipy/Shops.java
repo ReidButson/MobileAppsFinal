@@ -13,11 +13,11 @@ import java.util.ArrayList;
 
 public class Shops extends AppCompatActivity {
     ArrayList<Ingredient> ingredients = new ArrayList<>();
-    ArrayList<Store> stores;
+    static ArrayList<Store> stores;
 
     // The recycler view for the class
     RecyclerView recycler;
-    StoreAdapter adapter;
+    static StoreAdapter adapter;
 
     Button create_store;
     Intent intent;
@@ -91,5 +91,10 @@ public class Shops extends AppCompatActivity {
         adapter = new StoreAdapter(this, stores);
         recycler.setAdapter(adapter);
         recycler.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    public static void removeItem(int position){
+        stores.remove(position);
+        adapter.notifyItemRemoved(position);
     }
 }
