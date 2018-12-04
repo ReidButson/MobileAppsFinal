@@ -1,4 +1,4 @@
-package com.mobileapps.uoit.receipy;
+package com.mobileapps.uoit.receipy.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,10 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mobileapps.uoit.receipy.R;
+import com.mobileapps.uoit.receipy.ViewRecipeActivity;
+import com.mobileapps.uoit.receipy.objects.Recipe;
 
 import java.util.ArrayList;
 
@@ -50,7 +54,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Clicked on: " + mRecipeNames.get(i));
-                Intent intent = new Intent(mContext, ViewRecipe.class);
+                Intent intent = new Intent(mContext, ViewRecipeActivity.class);
                 intent.putExtra("recipe", mRecipeNames.get(i));
                 mContext.startActivity(intent);
             }

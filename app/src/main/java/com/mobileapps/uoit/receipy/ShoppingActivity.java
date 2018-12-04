@@ -12,9 +12,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.mobileapps.uoit.receipy.adapters.ShoppingIngredientAdapter;
+import com.mobileapps.uoit.receipy.objects.Ingredient;
+import com.mobileapps.uoit.receipy.objects.Recipe;
+
 import java.util.ArrayList;
 
-public class Shopping extends AppCompatActivity {
+public class ShoppingActivity extends AppCompatActivity {
     ImageButton add_recipe;
     ImageButton add_ingredient;
     static RecyclerView recyclerView;
@@ -35,7 +39,7 @@ public class Shopping extends AppCompatActivity {
         db = new DatabaseHelper(this);
         initUI();
         initRecycler();
-        // The ArrayLists of added recipes and ingredients to pass to the Shops intent
+        // The ArrayLists of added recipes and ingredients to pass to the ShopsActivity intent
         ingredients = new ArrayList<>();
         recipes = new ArrayList<>();
         // Used when debugging to clear the database.
@@ -56,7 +60,7 @@ public class Shopping extends AppCompatActivity {
                 Recipe searched_recipe = db.getRecipeByName(recipe_text.getText().toString());
                 // If the recipe isn't found, show an error message
                 if (searched_recipe == null) {
-                    Toast.makeText(Shopping.this, "Recipe not found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShoppingActivity.this, "Recipe not found", Toast.LENGTH_SHORT).show();
                 }
                 // Add it to the list if it was found
                 else {
@@ -76,7 +80,7 @@ public class Shopping extends AppCompatActivity {
                         ingredient_text.getText().toString());
                 // If the ingredient isn't found, show an error message
                 if (searched_ingredient == null) {
-                    Toast.makeText(Shopping.this, "Ingredient not found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShoppingActivity.this, "Ingredient not found", Toast.LENGTH_SHORT).show();
                 }
                 // Add it to the list if it was found
                 else {
@@ -91,17 +95,18 @@ public class Shopping extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create the intent to go to the Shops activity
-                Intent intent = new Intent(context, Shops.class);
-                // Pass the ingredients and recipes
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("INGREDIENTS", ingredients);
-                bundle.putSerializable("RECIPES", recipes);
-                intent.putExtras(bundle);
+                // Create the intent to go to the ShopsActivity activity
+                Intent intent = new Intent(context, ShopsActivity.class);
+                if (ingredients.size() != 0) {
+                    intent.putParcelableArrayListExtra("INGREDIENTS", ingredients);
+                }
+                if (recipes.size() != 0) {
+                    intent.putParcelableArrayListExtra("RECIPES", recipes);
+                }
+                startActivity(intent);
             }
         });
-
-    }
+}
 
     private void initRecycler(){
         recyclerView = findViewById(R.id.ingredient_list);
@@ -117,5 +122,4 @@ public class Shopping extends AppCompatActivity {
         adapter.notifyItemRangeChanged(position, ingredient_list.size());
         adapter.notifyDataSetChanged();
     }
-
 }

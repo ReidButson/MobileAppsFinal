@@ -1,14 +1,37 @@
-package com.mobileapps.uoit.receipy;
+package com.mobileapps.uoit.receipy.objects;
 
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.io.Serializable;
 
-public class Ingredient implements Serializable {
+public class Ingredient implements Parcelable {
     public int id;
     public String name;
     public double amount;
     public String units;
     public double price;
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @Override
+        public Ingredient createFromParcel(Parcel in) {
+            return new Ingredient(in);
+        }
+
+        @Override
+        public Ingredient[] newArray(int size) {
+            return new Ingredient[size];
+        }
+    };
+
+    public Ingredient(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.amount = in.readDouble();
+        this.units = in.readString();
+        this.price = in.readDouble();
+    }
 
     public Ingredient(int id, String name, double amount, String units, double price){
         this.id = id;
@@ -42,6 +65,8 @@ public class Ingredient implements Serializable {
         this.name = name;
         this.units = units;
     }
+
+
 
     public double getPrice() {
         return price;
@@ -81,5 +106,19 @@ public class Ingredient implements Serializable {
 
     public void setUnits(String units){
         this.units = units;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.name);
+        dest.writeDouble(this.amount);
+        dest.writeString(this.units);
+        dest.writeDouble(this.price);
     }
 }

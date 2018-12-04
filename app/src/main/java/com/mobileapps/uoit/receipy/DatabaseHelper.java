@@ -2,12 +2,14 @@ package com.mobileapps.uoit.receipy;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.lang.reflect.Array;
+import com.mobileapps.uoit.receipy.objects.Ingredient;
+import com.mobileapps.uoit.receipy.objects.Recipe;
+import com.mobileapps.uoit.receipy.objects.Store;
+
 import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper{

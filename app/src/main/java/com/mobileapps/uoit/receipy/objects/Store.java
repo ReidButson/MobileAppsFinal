@@ -1,4 +1,4 @@
-package com.mobileapps.uoit.receipy;
+package com.mobileapps.uoit.receipy.objects;
 
 import java.io.Serializable;
 

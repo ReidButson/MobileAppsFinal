@@ -1,4 +1,4 @@
-package com.mobileapps.uoit.receipy;
+package com.mobileapps.uoit.receipy.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.mobileapps.uoit.receipy.DatabaseHelper;
+import com.mobileapps.uoit.receipy.R;
+import com.mobileapps.uoit.receipy.ShoppingListActivity;
+import com.mobileapps.uoit.receipy.ShopsActivity;
+import com.mobileapps.uoit.receipy.objects.Ingredient;
+import com.mobileapps.uoit.receipy.objects.Store;
 
 import java.util.ArrayList;
 
@@ -57,14 +64,14 @@ public class StorePricesAdapter extends RecyclerView.Adapter<StorePricesAdapter.
             public void onClick(View v) {
                 DatabaseHelper dbh = new DatabaseHelper(mContext);
                 dbh.deleteStore(stores.get(i));
-                Shops.removeItem(i);
+                ShopsActivity.removeItem(i);
             }
         });
 
         viewHolder.shop_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent to_shop_list = new Intent(mContext, ShoppingList.class);
+                Intent to_shop_list = new Intent(mContext, ShoppingListActivity.class);
                 int x = 0;
                 for(Ingredient i: store_ingredients) {
                     to_shop_list.putExtra("Ingredients" + x, i);

@@ -1,7 +1,5 @@
 package com.mobileapps.uoit.receipy;
 
-import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.mobileapps.uoit.receipy.adapters.IngredientsAdapter;
+import com.mobileapps.uoit.receipy.objects.Ingredient;
+import com.mobileapps.uoit.receipy.objects.Recipe;
 
 import java.util.ArrayList;
 

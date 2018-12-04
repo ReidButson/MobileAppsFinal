@@ -1,4 +1,4 @@
-package com.mobileapps.uoit.receipy;
+package com.mobileapps.uoit.receipy.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,16 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.mobileapps.uoit.receipy.R;
+
 import java.util.ArrayList;
 
-public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder>{
-    private static final String TAG = "IngredientsAdapter";
+public class IngredientViewAdapter extends RecyclerView.Adapter<IngredientViewAdapter.ViewHolder> {
+    private static final String TAG = "IngredientViewAdapter";
     private ArrayList<String> mIngredients;
     private ArrayList<Double> mQuantity;
     private ArrayList<String> mUnits;
     private Context mContext;
 
-    public IngredientsAdapter(Context context, ArrayList<String> ingredients, ArrayList<String> units, ArrayList<Double> amount) {
+    public IngredientViewAdapter(Context context, ArrayList<String> ingredients, ArrayList<String> units, ArrayList<Double> amount) {
         mContext = context;
         mIngredients = ingredients;
         mQuantity = amount;
@@ -31,19 +33,19 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.ingredient_field, viewGroup, false);
-        ViewHolder holder = new ViewHolder(view);
+        IngredientViewAdapter.ViewHolder holder = new IngredientViewAdapter.ViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        Log.d(TAG, "onBindViewHolder: INITIATED");
         viewHolder.ingredient.setText(mIngredients.get(i));
-        try {
+        try{
             viewHolder.quantity.setText(Double.toString(mQuantity.get(i)));
         }catch (NullPointerException e){
             viewHolder.quantity.setText(null);
         }
+
         viewHolder.units.setText(mUnits.get(i));
 
         viewHolder.ingredient.addTextChangedListener(new TextWatcher() {
@@ -113,7 +115,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         EditText ingredient;
         EditText quantity;
         EditText units;

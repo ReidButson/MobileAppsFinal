@@ -1,4 +1,4 @@
-package com.mobileapps.uoit.receipy;
+package com.mobileapps.uoit.receipy.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,6 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mobileapps.uoit.receipy.R;
+import com.mobileapps.uoit.receipy.ShoppingActivity;
+import com.mobileapps.uoit.receipy.objects.Ingredient;
+
 import java.util.ArrayList;
 
 public class ShoppingIngredientAdapter extends RecyclerView.Adapter<ShoppingIngredientAdapter.ViewHolder>{
@@ -20,7 +24,6 @@ public class ShoppingIngredientAdapter extends RecyclerView.Adapter<ShoppingIngr
     public ShoppingIngredientAdapter(Context context, ArrayList<Ingredient> ingredients) {
         mContext = context;
         mIngredients = ingredients;
-
     }
 
     @NonNull
@@ -38,7 +41,7 @@ public class ShoppingIngredientAdapter extends RecyclerView.Adapter<ShoppingIngr
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Deleting " + mIngredients.get(i).getName(), Toast.LENGTH_SHORT).show();
-                Shopping.removeItem(i);
+                ShoppingActivity.removeItem(i);
             }
         });
 

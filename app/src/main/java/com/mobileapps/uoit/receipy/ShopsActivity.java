@@ -1,6 +1,5 @@
 package com.mobileapps.uoit.receipy;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,9 +9,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import java.util.ArrayList;
+import com.mobileapps.uoit.receipy.adapters.StorePricesAdapter;
+import com.mobileapps.uoit.receipy.objects.Ingredient;
+import com.mobileapps.uoit.receipy.objects.Recipe;
+import com.mobileapps.uoit.receipy.objects.Store;
 
-public class Shops extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
+public class ShopsActivity extends AppCompatActivity {
     ArrayList<Ingredient> ingredients = new ArrayList<>();
     static StorePricesAdapter adapter;
     static ArrayList<Store> stores;
@@ -22,9 +28,9 @@ public class Shops extends AppCompatActivity {
     ArrayList<Double> prices = new ArrayList<>();
     Button create_store;
     Intent intent;
-    Context context = this;
     DatabaseHelper db;
-    private static final String TAG = "Shops";
+    private static final String TAG = "ShopsActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +39,8 @@ public class Shops extends AppCompatActivity {
         stores = db.getStores();
         initUi();
         initStores();
-        getIngredient();
+        // Receive all ingredients from the intent here
+        getIntentExtras();
 
         //db.deleteStores();
     }
@@ -63,19 +70,38 @@ public class Shops extends AppCompatActivity {
         });
     }
 
-    /** Gets all the ingredients passed from the {{@link Shopping}} activity and places them in the
+    /** Gets all the ingredients passed from the {{@link ShoppingActivity}} activity and places them in the
      * ingredients ArrayList.
      *
      */
-    private void getIngredient(){
+    private void getIntentExtras(){
         intent = getIntent();
-        int total = intent.getIntExtra("total", 0);
-        Log.d(TAG, "getIngredient total: " + total);
-        for(int i = 0; i < total; i++){
-            Ingredient ingredient = (Ingredient) intent.getSerializableExtra("Ingredients"+i);
-            ingredients.add(ingredient);
-            Log.d(TAG, "getIngredient: " + ingredient.getName());
+        // Get the ArrayList of items that need to be grabbed
+        ArrayList<Ingredient> received_ingredients = intent.getParcelableArrayListExtra("INGREDIENTS");
+        ArrayList<Recipe> received_recipes = intent.getParcelableArrayListExtra("RECIPES");
+        // Loop through them all separately so they are only shown once
+        HashMap<Integer, Ingredient> ingredient_hash = new LinkedHashMap<>();
+        if (received_ingredients != null) {
+            for (Ingredient received_ingredient: received_ingredients) {
+                if (!ingredient_hash.containsKey(received_ingredient.getId())) {
+                    ingredient_hash.put(received_ingredient.getId(), received_ingredient);
+                }
+            }
         }
+        if (received_recipes != null) {
+            for (Recipe received_recipe : received_recipes) {
+                if (received_recipe.getIngredients() != null) {
+                    for (Ingredient received_ingredient : received_recipe.getIngredients()) {
+                        if (!ingredient_hash.containsKey(received_ingredient.getId())) {
+                            ingredient_hash.put(received_ingredient.getId(), received_ingredient);
+                        }
+                    }
+                }
+            }
+        }
+        // Add all the hash map values into the ingredients array
+        ingredients.addAll(ingredient_hash.values());
+        System.out.println("received extras");
     }
 
     private void getPrices(){
@@ -83,7 +109,7 @@ public class Shops extends AppCompatActivity {
         Double sPrice, sAmount, totalTemp = 0.00;
         boolean found = false;
         for (ArrayList<Ingredient> i : store){
-            for (int counter = 0; counter<i.size();counter++){
+            for (int counter = 0; counter<i.size(); counter++){
                 for(int inner = 0; inner<ingredients.size();inner++){
                     if(ingredients.get(inner).getName().equals(i.get(counter).getName())){
                         found = true;
@@ -129,12 +155,12 @@ public class Shops extends AppCompatActivity {
     }
 
     /** Creates an intent for moving ingredient objects to the
-     * {{@link com.mobileapps.uoit.receipy.CreateStore} activity
+     * {{@link CreateStoreActivity} activity
      *
-     * @return The intent to be used to run the {{@link CreateStore}} activity.
+     * @return The intent to be used to run the {{@link CreateStoreActivity}} activity.
      */
     private Intent packageIngredients(){
-        Intent parcel = new Intent(this, CreateStore.class);
+        Intent parcel = new Intent(this, CreateStoreActivity.class);
         int x = 0;
         for(Ingredient i: ingredients) {
             parcel.putExtra("Ingredients" + x, i);

@@ -9,9 +9,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.mobileapps.uoit.receipy.adapters.IngredientViewAdapter;
+import com.mobileapps.uoit.receipy.objects.Ingredient;
+import com.mobileapps.uoit.receipy.objects.Recipe;
+
 import java.util.ArrayList;
 
-public class ViewRecipe extends Activity {
+public class ViewRecipeActivity extends Activity {
     RecyclerView recyclerView;
     Button confirmBtn, deleteBtn, addIngredientBtn;
     TextView recipeText;
@@ -21,7 +25,7 @@ public class ViewRecipe extends Activity {
     ArrayList<String> names = new ArrayList<String>();
     ArrayList<String> units = new ArrayList<String>();
     ArrayList<Ingredient> prevIng;
-    private static final String TAG = "ViewRecipe";
+    private static final String TAG = "ViewRecipeActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

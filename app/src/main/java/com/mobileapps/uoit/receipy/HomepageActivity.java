@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
 public class HomepageActivity extends AppCompatActivity {
     DatabaseHelper db;
@@ -24,12 +23,7 @@ public class HomepageActivity extends AppCompatActivity {
     }
 
     public void shoppingButton (View v) {
-        Intent to_shopping = new Intent(this, Shopping.class);
+        Intent to_shopping = new Intent(this, ShoppingActivity.class);
         startActivity(to_shopping);
-    }
-
-    public void addShopButton (View v) {
-        Intent to_add_shop = new Intent(this, LogReceiptActivity.class);
-        startActivity(to_add_shop);
     }
 }

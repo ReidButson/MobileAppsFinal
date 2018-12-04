@@ -19,13 +19,12 @@
         <activity android:name=".RecipeListActivity" />
         <activity android:name=".CreateRecipeActivity" />
         <activity
-            android:name=".ViewRecipe"
+            android:name=".ViewRecipeActivity"
             android:label="@string/title_activity_view_recipe" />
-        <activity android:name=".Shopping" />
-        <activity android:name=".Shops" />
-        <activity android:name=".CreateStore" />
-        <activity android:name=".ShoppingList" />
-        <activity android:name=".LogReceiptActivity"></activity>
+        <activity android:name=".ShoppingActivity" />
+        <activity android:name=".ShopsActivity" />
+        <activity android:name=".CreateStoreActivity" />
+        <activity android:name=".ShoppingListActivity" />
     </application>
 
 </manifest>

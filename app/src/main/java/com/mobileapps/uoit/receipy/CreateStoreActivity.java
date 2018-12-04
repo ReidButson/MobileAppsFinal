@@ -9,25 +9,27 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+
+import com.mobileapps.uoit.receipy.adapters.StoreIngredientAdaptor;
+import com.mobileapps.uoit.receipy.objects.Ingredient;
+import com.mobileapps.uoit.receipy.objects.Store;
 
 import java.util.ArrayList;
 
-public class ShoppingList extends AppCompatActivity {
+public class CreateStoreActivity extends AppCompatActivity {
     Button backBtn, doneBtn;
-    TextView storeText;
+    EditText storeText;
     RecyclerView ingredientView;
     DatabaseHelper db;
     ArrayList<Double> price = new ArrayList<>();
     ArrayList<Double> qty = new ArrayList<>();
     ArrayList<Ingredient> ingredients = new ArrayList<>();
-    Store store;
     Intent intent;
-    private static final String TAG = "CreateStore";
+    private static final String TAG = "CreateStoreActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shopping_list);
+        setContentView(R.layout.activity_create_store);
         db = new DatabaseHelper(this);
         initUi();
         getIngredient();
@@ -39,23 +41,21 @@ public class ShoppingList extends AppCompatActivity {
         backBtn = findViewById(R.id.return_button);
         storeText = findViewById(R.id.store_name_field);
         ingredientView = findViewById(R.id.ingredient_price_view);
-        intent = getIntent();
-        store = (Store) intent.getSerializableExtra("store");
-        storeText.setText(store.getName());
-
         doneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String name = storeText.getText().toString();
+                Store store = new Store(name, "home");
+                int x = (int) db.insertStore(store);
+                store.setId(x);
                 int y = 0;
                 for(Ingredient i : ingredients){
                     Log.d(TAG, "onClick: "+ y);
                     i.setAmount(qty.get(y));
                     i.setPrice(price.get(y));
+                    db.insertStoreIngredient(store, i);
                     y++;
                 }
-                db.clearStoreIngredients(store);
-                db.insertStoreIngredients(store, ingredients);
-
                 finish();
             }
         });
@@ -91,5 +91,6 @@ public class ShoppingList extends AppCompatActivity {
         }catch (NullPointerException e){
             System.out.println("NULL");
         }
+
     }
 }
