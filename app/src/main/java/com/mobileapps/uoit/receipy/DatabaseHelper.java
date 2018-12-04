@@ -82,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 STORE_INGREDIENTS_STORE_ID + " Integer NOT NULL, " +
                 STORE_INGREDIENTS_INGREDIENT_ID + " Integer NOT NULL, " +
                 STORE_INGREDIENTS_PRICE + " Real NOT NULL, " +
-                STORE_INGREDIENTS_AMOUNT + " Real NOT NULL, " +
+                STORE_INGREDIENTS_AMOUNT + " Real, " +
                 "FOREIGN KEY (" + STORE_INGREDIENTS_STORE_ID +
                 ") REFERENCES " + STORE_TABLE + "(" + STORE_ID + "), " +
                 "FOREIGN KEY (" + STORE_INGREDIENTS_INGREDIENT_ID +
@@ -313,6 +313,101 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         // Return the list of ingredients from the database
         return stores;
     }
+
+        public Ingredient getIngredientByName(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = String.format("SELECT i.%s, i.%s, i.%s\n" +
+                "FROM %s as i\n" +
+                "WHERE i.%s = ?", INGREDIENTS_ID, INGREDIENTS_NAME, INGREDIENTS_MEASUREMENT_TYPE,
+                INGREDIENTS_TABLE, INGREDIENTS_NAME);
+        Cursor cursor = db.rawQuery(sql, new String[] {name});
+        if (cursor.moveToFirst() && cursor.getCount() == 1) {
+            int ingredient_id = cursor.getInt(0);
+            String ingredient_name = cursor.getString(1);
+            String measure = cursor.getString(2);
+            cursor.close();
+            db.close();
+            return new Ingredient(ingredient_id, ingredient_name, measure);
+        }
+        else {
+            cursor.close();
+            db.close();
+            return null;
+        }
+    }
+
+    /** Gets the price of a list of ingredients at a given store.
+     *
+     * @param store The store.
+     * @param ingredients The ingredients.
+     * @return
+     */
+    public Store getPriceAtStore(Store store, ArrayList<Ingredient> ingredients) {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = String.format("SELECT %s\n" +
+                "FROM %s\n" +
+                "WHERE %s = ? AND %s = ?", STORE_INGREDIENTS_PRICE, STORE_INGREDIENTS_TABLE,
+                STORE_INGREDIENTS_STORE_ID, STORE_INGREDIENTS_INGREDIENT_ID);
+        // The total price to be returned to be returned in the store
+        double total_price = 0;
+        // The total number of not found ingredients to be returned in the store
+        int total_not_found = 0;
+        // Loop through all the ingredients and attempt to add it to the total
+        for (Ingredient ingredient: ingredients) {
+            Cursor cursor = db.rawQuery(sql, new String[] {Integer.toString(store.getId()),
+                    Integer.toString(ingredient.getId())});
+            // If the ingredient was found for the store
+            if (cursor.moveToFirst() && cursor.getCount() == 1) {
+                total_price += cursor.getDouble(0);
+            }
+            // If the ingredient was not found for the store
+            else {
+                total_not_found++;
+            }
+        }
+        // Create a new store object to avoid memory issues
+        Store return_recipe = new Store(store.getId(), store.getName(), store.getAddress());
+        return_recipe.setPrice(total_price);
+        return_recipe.setItems_not_found(total_not_found);
+        return return_recipe;
+    }
+
+    public Recipe getRecipeByName(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = String.format("SELECT r.%s, i.%s, i.%s, ri.%s, i.%s\n" +
+                "FROM %s\n as ri\n" +
+                "INNER JOIN %s AS r ON ri.%s = r.%s\n" +
+                "INNER JOIN %s AS i ON ri.%s = i.%s\n" +
+                "WHERE r.%s = ?", RECIPE_ID, INGREDIENTS_ID, INGREDIENTS_NAME,
+                RECIPE_INGREDIENTS_AMOUNT, INGREDIENTS_MEASUREMENT_TYPE,
+                RECIPE_INGREDIENTS_TABLE,
+                RECIPE_TABLE, RECIPE_INGREDIENTS_RECIPE_ID, RECIPE_ID,
+                INGREDIENTS_TABLE, RECIPE_INGREDIENTS_INGREDIENT_ID, INGREDIENTS_ID,
+                RECIPE_NAME);
+        Cursor cursor = db.rawQuery(sql, new String[] {name});
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(0);
+            ArrayList<Ingredient> ingredients = new ArrayList<>();
+            do {
+                int ingredient_id = cursor.getInt(1);
+                String ingredient_name = cursor.getString(2);
+                double ingredient_amount = cursor.getDouble(3);
+                String measure = cursor.getString(4);
+                Ingredient ingredient = new Ingredient(ingredient_id, ingredient_name,
+                        ingredient_amount, measure);
+                ingredients.add(ingredient);
+            } while (cursor.moveToNext());
+            cursor.close();
+            db.close();
+            return new Recipe(id, name, ingredients);
+        }
+        else {
+            cursor.close();
+            db.close();
+            return null;
+        }
+    }
+
     public ArrayList<Ingredient> getStoreIngredients(Store store){
         // Query the database
         ArrayList<Ingredient> ingredients = new ArrayList<>();
@@ -413,6 +508,44 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.delete(RECIPE_INGREDIENTS_TABLE, RECIPE_INGREDIENTS_RECIPE_ID + " = ?",
                 new String[] { String.valueOf(recipe.getId()) });
         db.close();
+    }
+
+    /** Writes both new values and updated values into the database.
+     *
+     * @param id
+     * @param ingredients
+     */
+    public void writePrices(int id, ArrayList<Ingredient> ingredients) {
+        SQLiteDatabase db = getWritableDatabase();
+        // Check if the item already exists in the database
+        String check_sql = String.format("SELECT %s, %s FROM %s WHERE %s = ? AND %s = ?",
+                STORE_INGREDIENTS_INGREDIENT_ID, STORE_INGREDIENTS_PRICE, STORE_INGREDIENTS_TABLE,
+                STORE_INGREDIENTS_STORE_ID, STORE_INGREDIENTS_INGREDIENT_ID);
+        // Loop through all the ingredients
+        for (Ingredient ingredient: ingredients) {
+            Cursor check_cursor = db.rawQuery(check_sql, new String[] {Integer.toString(id),
+                    Integer.toString(ingredient.getId())});
+            // If it exist already, get the id and update
+            if (check_cursor.getCount() == 1) {
+                check_cursor.moveToFirst();
+                int row_id = check_cursor.getInt(0);
+                double stored_price = check_cursor.getDouble(1);
+                if (ingredient.getPrice() < stored_price) {
+                    ContentValues values = new ContentValues();
+                    values.put(STORE_INGREDIENTS_PRICE, ingredient.getPrice());
+                    db.update(STORE_INGREDIENTS_TABLE, values,
+                            STORE_INGREDIENTS_ID + "=" + row_id, null);
+                }
+            }
+            // If it doesn't exist already, insert it
+            else {
+                ContentValues values = new ContentValues();
+                values.put(STORE_INGREDIENTS_STORE_ID, id);
+                values.put(STORE_INGREDIENTS_INGREDIENT_ID, ingredient.getId());
+                values.put(STORE_INGREDIENTS_PRICE, ingredient.getPrice());
+                db.insert(STORE_INGREDIENTS_TABLE, null, values);
+            }
+        }
     }
 
     public void deleteStores(){

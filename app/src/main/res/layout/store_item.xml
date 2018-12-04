@@ -21,13 +21,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/store_name_text"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/txt_default"
-        android:textSize="25dp" />
+        android:textSize="16dp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/go_shopping_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

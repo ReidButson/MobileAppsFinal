@@ -17,14 +17,11 @@ import java.util.ArrayList;
 public class StoreIngredientAdaptor extends RecyclerView.Adapter<StoreIngredientAdaptor.ViewHolder>{
     private static final String TAG = "IngredientsAdapter";
     private ArrayList<Ingredient> mIngredients;
-    private ArrayList<Double> price, quantity;
     private Context mContext;
 
-    public StoreIngredientAdaptor(Context context, ArrayList<Ingredient> ingredients, ArrayList<Double> price, ArrayList<Double> quantity) {
+    public StoreIngredientAdaptor(Context context, ArrayList<Ingredient> ingredients) {
         mContext = context;
         mIngredients = ingredients;
-        this.price = price;
-        this.quantity = quantity;
 
     }
 
@@ -52,47 +49,18 @@ public class StoreIngredientAdaptor extends RecyclerView.Adapter<StoreIngredient
 
             @Override
             public void afterTextChanged(Editable s) {
-                Double cost;
+                Double cost = null;
                 try{
                     cost = Double.parseDouble(viewHolder.priceText.getText().toString());
-                    price.set(i, cost);
                     Log.d(TAG, "afterTextChanged: success" + cost);
                 }catch (NumberFormatException e){
-                    cost = null;
-                    price.set(i, cost);
+                    cost = -1.0;
                     Log.d(TAG, "afterTextChanged: failure");
+                } finally {
+                    mIngredients.get(i).setPrice(cost);
                 }
-                price.add(cost);
             }
         });
-
-        viewHolder.qty.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Double pricePer;
-                try{
-                    pricePer = Double.parseDouble(viewHolder.qty.getText().toString());
-                    quantity.set(i, pricePer);
-                    Log.d(TAG, "afterTextChanged: success" + pricePer);
-                }catch (NumberFormatException e){
-                    pricePer = null;
-                    quantity.set(i, pricePer);
-                    Log.d(TAG, "afterTextChanged: failure");
-                }
-                quantity.add(pricePer);
-            }
-        });
-
     }
 
     @Override
@@ -112,7 +80,6 @@ public class StoreIngredientAdaptor extends RecyclerView.Adapter<StoreIngredient
             super(itemView);
             ingredient = itemView.findViewById(R.id.ingredient_name);
             priceText = itemView.findViewById(R.id.price_field);
-            qty = itemView.findViewById(R.id.quantity_field);
         }
     }
 }

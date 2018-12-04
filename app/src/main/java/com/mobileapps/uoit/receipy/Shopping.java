@@ -22,9 +22,7 @@ public class Shopping extends AppCompatActivity {
     Button confirm;
     EditText recipe_text;
     EditText ingredient_text;
-    ArrayList<Ingredient> ingredients;
-    ArrayList<Recipe> recipes;
-    static ArrayList<Ingredient> ingredient_list = new ArrayList<>();
+    static ArrayList<Ingredient> ingredients = new ArrayList<>();
     DatabaseHelper db;
     Context context = this;
 
@@ -35,8 +33,6 @@ public class Shopping extends AppCompatActivity {
         db = new DatabaseHelper(this);
         initUI();
         initRecycler();
-        ingredients = db.getIngredients();
-        recipes = db.getRecipes();
     }
 
     private void initUI(){
@@ -49,16 +45,25 @@ public class Shopping extends AppCompatActivity {
         add_recipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean found = false;
                 String name = recipe_text.getText().toString();
-                for(Recipe r: recipes){
-                    if (r.name.equals(name)){
-                        getIngredient(r);
-                        found = true;
+                Recipe recipe = db.getRecipeByName(name);
+
+                if (recipe != null) {
+                    for (Ingredient ingredient : recipe.getIngredients()) {
+                        ingredient.setAmount(0);
+                        if (!ingredients.contains(ingredient)) {
+                            ingredients.add(ingredient);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(
+                                    Shopping.this,
+                                    "Ignored some duplicate entries",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-                if (found == false){
-                    Toast.makeText(Shopping.this, "Recipe not found", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(Shopping.this,
+                            "Recipe not found", Toast.LENGTH_SHORT).show();
                 }
                 recipe_text.setText("");
             }
@@ -69,14 +74,22 @@ public class Shopping extends AppCompatActivity {
             public void onClick(View v) {
                 boolean found = false;
                 String name = ingredient_text.getText().toString();
-                for(Ingredient i: ingredients){
-                    if(name.equals(i.name)){
-                        ingredient_list.add(i);
-                        found = true;
-                    }
-                }
-                if (found != true){
+                Ingredient ingredient = db.getIngredientByName(name);
+                if (ingredient == null){
                     Toast.makeText(Shopping.this, "Ingredient not found", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    ingredient.setAmount(0);
+                    if (ingredients.contains(ingredient)) {
+                        Toast.makeText(
+                                    Shopping.this,
+                                    "Ignored some duplicate entries",
+                                    Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        ingredients.add(ingredient);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
                 ingredient_text.setText("");
             }
@@ -86,37 +99,26 @@ public class Shopping extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, Shops.class);
-                int x = 0;
-                for(Ingredient i: ingredient_list){
-                    intent.putExtra("Ingredients" + x, i);
-                    x++;
-                }
-                intent.putExtra("total", x);
+                intent.putParcelableArrayListExtra("INGREDIENTS", ingredients);
                 startActivity(intent);
             }
         });
-
-    }
-
-    private void getIngredient(Recipe recipe){
-        for(Ingredient i: db.getRecipeIngredients(recipe)){
-            ingredient_list.add(i);
-        }
     }
 
     private void initRecycler(){
         recyclerView = findViewById(R.id.ingredient_list);
-        adapter = new ShoppingIngredientAdapter(this, ingredient_list);
+        adapter = new ShoppingIngredientAdapter(this, ingredients);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    /** Removes an item from the ingredients array, and updates the adapter.
+     *
+     * @param position
+     */
     public static void removeItem(int position){
-        ingredient_list.remove(position);
-        recyclerView.removeViewAt(position);
+        ingredients.remove(position);
         adapter.notifyItemRemoved(position);
-        adapter.notifyItemRangeChanged(position, ingredient_list.size());
-        adapter.notifyDataSetChanged();
     }
 
 }

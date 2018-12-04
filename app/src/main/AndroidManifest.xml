@@ -23,7 +23,8 @@
             android:label="@string/title_activity_view_recipe" />
         <activity android:name=".Shopping" />
         <activity android:name=".Shops" />
-        <activity android:name=".CreateStore"></activity>
+        <activity android:name=".CreateStore" />
+        <activity android:name=".LogPricesActivity"></activity>
     </application>
 
 </manifest>

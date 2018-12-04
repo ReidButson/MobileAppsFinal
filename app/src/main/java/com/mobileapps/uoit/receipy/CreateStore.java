@@ -28,7 +28,7 @@ public class CreateStore extends AppCompatActivity {
         setContentView(R.layout.activity_create_store);
         db = new DatabaseHelper(this);
         initUi();
-        getIngredient();
+        getIngredientsFromIntent();
         initRecycler();
     }
 
@@ -67,26 +67,16 @@ public class CreateStore extends AppCompatActivity {
 
     private void initRecycler(){
         ingredientView = findViewById(R.id.ingredient_price_view);
-        StoreIngredientAdaptor adaptor = new StoreIngredientAdaptor(this, ingredients, price, qty);
+        StoreIngredientAdaptor adaptor = new StoreIngredientAdaptor(this, ingredients);
         ingredientView.setAdapter(adaptor);
         ingredientView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void getIngredient() {
+    /** Get the ingredient list from the extra.
+     *
+     */
+    private void getIngredientsFromIntent() {
         intent = getIntent();
-        int total = intent.getIntExtra("total", 0);
-        Log.d(TAG, "getIngredient: "+total);
-        try{
-            for (int i = 0; i < total; i++) {
-                Ingredient ingredient = (Ingredient) intent.getSerializableExtra("Ingredients" + i);
-                Log.d(TAG, "getIngredient: "+ingredient.getName());
-                ingredients.add(ingredient);
-                price.add(null);
-                qty.add(null);
-            }
-        }catch (NullPointerException e){
-            System.out.println("NULL");
-        }
-
+        ingredients = intent.getParcelableArrayListExtra("INGREDIENTS");
     }
 }
